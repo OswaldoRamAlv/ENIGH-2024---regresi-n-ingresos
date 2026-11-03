@@ -1,0 +1,11 @@
+Dentro de esta carpeta se encuentra la limpieza y analisis exploratorio de datos de las variables por persona.
+
+Para poder llegar a la base de personas se tuvieron que concatenar variables de distintas tablas,
+pero el resultado parece no ser el mejor, puedto que nos encontramos con muchos atipicos y una alta cantidad de personas sin ingresos,
+ademas de una alta cantidad d epersonas menores de edad.
+
+Por la forma en que se maneja la ENIG (tomando muestras por hogares), este comportamiento tiene sentido,
+ya que en un hogar se pueden encontrar varios hijos, los cuales no suelen tener ingresos al ser estudiantes,
+ademas de amas de casa que ejercen un trabajo que usualmente no es remunerado.
+
+Estas razones nos han llevado a probar un enfoque centrado en los hogares, en lugar de por persona, aunque no se descarta como ejercicio posterior.S
