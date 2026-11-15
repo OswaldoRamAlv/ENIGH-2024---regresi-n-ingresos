@@ -1,0 +1,2609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#142d4e">
+  <meta name="description" content="Proyecto de análisis de la ENIGH 2024 del INEGI. Universidad de Guadalajara, CUGDL.">
+  <title>Proyecto tercer semestre | ENIGH 2024 | CUGDL - UdeG</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --navy: #142d4e;
+      --navy-light: #203e63;
+      --blue: #2865a0;
+      --cyan: #4d91b5;
+      --gold: #bd963e;
+      --paper: #f5f7fa;
+      --ink: #263548;
+      --muted: #64748b;
+      --border: #dce3eb;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    .top-nav {
+      background: rgba(20, 45, 78, 0.97);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero {
+      background:
+        radial-gradient(circle at 88% 15%, rgba(77,145,181,.24), transparent 29%),
+        radial-gradient(circle at 12% 90%, rgba(189,150,62,.13), transparent 27%),
+        linear-gradient(135deg, #10243e 0%, #183a60 65%, #215579 100%);
+    }
+
+    .section-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 5px 18px rgba(20, 45, 78, .045);
+    }
+
+    .section-heading {
+      color: var(--navy);
+      letter-spacing: -.025em;
+    }
+
+    .eyebrow {
+      color: var(--blue);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .kpi {
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.17);
+      border-radius: 13px;
+      padding: 15px;
+    }
+
+    .kpi-number {
+      color: #fff;
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -.04em;
+      line-height: 1.15;
+    }
+
+    .kpi-label {
+      color: rgba(255,255,255,.76);
+      font-size: .76rem;
+      line-height: 1.4;
+      margin-top: 7px;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .83rem;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #edf2f7;
+      color: #263e5a;
+      font-weight: 750;
+      text-align: left;
+      padding: 11px 13px;
+    }
+
+    td {
+      border-top: 1px solid #e8edf2;
+      padding: 10px 13px;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #fafbfd;
+    }
+
+    .mono {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+    }
+
+    .chart-container.tall {
+      height: 360px;
+    }
+
+    .code-window {
+      background: #101d2d;
+      color: #d8e3ef;
+      border-radius: 0 0 12px 12px;
+      overflow: hidden;
+    }
+
+    .code-window pre {
+      padding: 16px;
+      overflow-x: auto;
+      max-height: 600px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      line-height: 1.65;
+      tab-size: 4;
+      white-space: pre;
+    }
+
+    .code-tabs {
+      display: flex;
+      overflow-x: auto;
+      gap: 5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .code-tab {
+      padding: 10px 14px;
+      font-size: .76rem;
+      font-weight: 700;
+      color: #64748b;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+    }
+
+    .code-tab.active {
+      color: var(--navy);
+      border-bottom-color: var(--gold);
+    }
+
+    .code-panel {
+      display: none;
+    }
+
+    .code-panel.active {
+      display: block;
+    }
+
+    .nav-link {
+      display: inline-block;
+      padding: 8px 11px;
+      border-radius: 7px;
+      font-size: .76rem;
+      font-weight: 650;
+      color: rgba(255,255,255,.82);
+      white-space: nowrap;
+      transition: background .2s;
+    }
+
+    .nav-link:hover {
+      background: rgba(255,255,255,.13);
+      color: #fff;
+    }
+
+    .nav-scroll::-webkit-scrollbar,
+    .code-tabs::-webkit-scrollbar,
+    .table-wrap::-webkit-scrollbar {
+      height: 5px;
+    }
+
+    .nav-scroll::-webkit-scrollbar-thumb,
+    .code-tabs::-webkit-scrollbar-thumb,
+    .table-wrap::-webkit-scrollbar-thumb {
+      background: #aab8c8;
+      border-radius: 10px;
+    }
+
+    .number-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 29px;
+      height: 29px;
+      border-radius: 8px;
+      background: #eaf1f8;
+      color: var(--navy);
+      font-weight: 800;
+      font-size: .77rem;
+    }
+
+    .note {
+      border-left: 4px solid var(--gold);
+      background: #faf7ef;
+      border-radius: 0 9px 9px 0;
+    }
+
+    .method-step {
+      position: relative;
+      padding-left: 37px;
+    }
+
+    .method-step::before {
+      content: "";
+      position: absolute;
+      left: 12px;
+      top: 27px;
+      bottom: -17px;
+      width: 1px;
+      background: #d6e0eb;
+    }
+
+    .method-step:last-child::before {
+      display: none;
+    }
+
+    .method-dot {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      width: 26px;
+      height: 26px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--navy);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .metric-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .cluster-top {
+      border-top: 4px solid var(--blue);
+    }
+
+    .cluster-mid {
+      border-top: 4px solid var(--cyan);
+    }
+
+    .cluster-low {
+      border-top: 4px solid var(--gold);
+    }
+
+    .copy-status {
+      min-height: 18px;
+      font-size: 11px;
+      color: #a7e2c2;
+    }
+
+    .foot-link {
+      color: #d6e5f4;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    @media (min-width: 768px) {
+      .chart-container {
+        height: 340px;
+      }
+
+      .code-window pre {
+        font-size: 13px;
+        padding: 22px;
+      }
+    }
+
+    @media print {
+      .top-nav,
+      .copy-button,
+      .code-tabs {
+        display: none !important;
+      }
+
+      body {
+        background: white;
+      }
+
+      .section-card {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVEGACIÓN -->
+  <nav class="top-nav fixed top-0 left-0 right-0 z-50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-3 md:px-6">
+      <div class="h-14 flex items-center gap-3">
+        <div class="flex-shrink-0 flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center text-white font-black text-xs">
+            CUGDL
+          </div>
+          <span class="text-white text-xs font-bold hidden sm:block">ENIGH 2024</span>
+        </div>
+
+        <div class="nav-scroll flex-1 overflow-x-auto">
+          <div class="flex items-center min-w-max">
+            <a class="nav-link" href="#inicio">Inicio</a>
+            <a class="nav-link" href="#objetivos">Objetivos</a>
+            <a class="nav-link" href="#eda">EDA</a>
+            <a class="nav-link" href="#genero">Género</a>
+            <a class="nav-link" href="#modelos">Machine Learning</a>
+            <a class="nav-link" href="#codigo">Código</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="pt-14">
+
+    <!-- 1. HERO Y METADATOS -->
+    <header id="inicio" class="hero text-white">
+      <div class="max-w-7xl mx-auto px-5 md:px-8 pt-12 md:pt-20 pb-12 md:pb-16">
+
+        <div class="max-w-4xl">
+          <div class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wide mb-6">
+            <span class="w-2 h-2 rounded-full bg-amber-300"></span>
+            UNIVERSIDAD DE GUADALAJARA · CUGDL
+          </div>
+
+          <p class="text-blue-100 text-sm font-semibold tracking-widest uppercase mb-3">
+            Proyecto tercer semestre
+          </p>
+
+          <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+            Análisis de ingresos y características sociodemográficas de los hogares mexicanos
+          </h1>
+
+          <p class="mt-5 text-blue-100 text-base md:text-lg leading-relaxed max-w-3xl">
+            Encuesta Nacional de Ingresos y Gastos de los Hogares 2024 · Nueva Serie · INEGI
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-9 max-w-4xl">
+          <div class="border-l-2 border-amber-300 pl-4">
+            <p class="text-xs text-blue-200 uppercase tracking-wider font-bold mb-1">Institución</p>
+            <p class="font-semibold">Universidad de Guadalajara</p>
+            <p class="text-sm text-blue-100">Centro Universitario de Guadalajara (CUGDL)</p>
+          </div>
+
+          <div class="border-l-2 border-amber-300 pl-4">
+            <p class="text-xs text-blue-200 uppercase tracking-wider font-bold mb-1">Programa educativo</p>
+            <p class="font-semibold">Licenciatura en Inteligencia Artificial y Ciencia de los Datos</p>
+            <p class="text-sm text-blue-100">Turno Vespertino</p>
+          </div>
+        </div>
+
+        <div class="mt-8">
+          <p class="text-xs text-blue-200 uppercase tracking-wider font-bold mb-3">Integrantes del equipo</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="rounded-full bg-white/10 border border-white/20 px-3 py-2 text-sm">Diego Alejando Solis Guadarrama</span>
+            <span class="rounded-full bg-white/10 border border-white/20 px-3 py-2 text-sm">Oswaldo Ramirez Alvarez</span>
+            <span class="rounded-full bg-white/10 border border-white/20 px-3 py-2 text-sm">Jorge Iván Gutiérrez Amezcua</span>
+          </div>
+        </div>
+
+        <div class="mt-8 text-sm text-blue-100">
+          Fuente: microdatos abiertos de la ENIGH 2024 Nueva Serie, INEGI.
+          <span class="block text-xs text-blue-200 mt-1">Portal de Datos Abiertos del INEGI.</span>
+        </div>
+
+        <!-- KPI -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-10">
+          <div class="kpi">
+            <div class="kpi-number">252,527</div>
+            <div class="kpi-label">Registros de personas en clean_data.csv</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi-number">83,454</div>
+            <div class="kpi-label">Hogares después de la depuración IQR</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi-number">$57,616.598</div>
+            <div class="kpi-label">Media del ingreso corriente trimestral (MXN)</div>
+          </div>
+
+          <div class="kpi">
+            <div class="kpi-number">k = 3</div>
+            <div class="kpi-label">Número de clústeres seleccionado en K-Means</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. OBJETIVOS E HIPÓTESIS -->
+    <section id="objetivos" class="max-w-7xl mx-auto px-5 md:px-8 py-12 md:py-16">
+      <div class="mb-7">
+        <p class="eyebrow">02 · Planteamiento del estudio</p>
+        <h2 class="section-heading text-2xl md:text-3xl font-extrabold mt-2">
+          Objetivos e hipótesis
+        </h2>
+      </div>
+
+      <div class="section-card p-5 md:p-7">
+        <h3 class="font-bold text-lg text-slate-800 mb-3">Objetivo principal del proyecto</h3>
+
+        <p class="text-sm md:text-base leading-7 text-slate-600">
+          El objetivo de este proyecto es determinar y analizar la relación que existe entre distintas
+          variables sociodemográficas (edad, sexo_H, nivelaprob y presencia de discapacidades disc_*)
+          y laborales (htrab_total, num_trabajos y num_ingresos) con el ingreso trimestral total
+          (ing_tri_total) percibido por una persona de 12 años o más en México.
+        </p>
+
+        <p class="text-sm md:text-base leading-7 text-slate-600 mt-4">
+          A partir de los microdatos abiertos de la Encuesta Nacional de Ingresos y Gastos de los
+          Hogares (ENIGH) 2024 Nueva Serie del INEGI, buscamos integrar en un solo registro por
+          persona sus características demográficas, sus empleos y todas sus fuentes de ingreso para
+          evaluar cómo influyen estas variables en la percepción económica individual y sentar las
+          bases para entrenar modelos de regresión en Machine Learning.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
+        <div class="section-card p-5">
+          <div class="number-chip mb-4">01</div>
+          <h3 class="font-bold text-slate-800 mb-2">Modelos de regresión</h3>
+          <p class="text-sm text-slate-600 leading-6">
+            Realizar modelos de regresión que traten de predecir el ingreso de un hogar, utilizando
+            las variables sociodemográficas del mismo.
+          </p>
+        </div>
+
+        <div class="section-card p-5">
+          <div class="number-chip mb-4">02</div>
+          <h3 class="font-bold text-slate-800 mb-2">Modelos de clasificación</h3>
+          <p class="text-sm text-slate-600 leading-6">
+            Realizar modelos de clasificación que agrupen los hogares según sus características
+            sociodemográficas.
+          </p>
+        </div>
+
+        <div class="section-card p-5 md:col-span-2 lg:col-span-1">
+          <div class="number-chip mb-4">03</div>
+          <h3 class="font-bold text-slate-800 mb-2">Diferencia por jefatura</h3>
+          <p class="text-sm text-slate-600 leading-6">
+            Determinar si existe una diferencia significativa entre los ingresos percibidos por hogares
+            con jefes de hogar hombres y los hogares con jefas de hogar mujeres.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-5 section-card p-5 md:p-7">
+        <p class="eyebrow mb-3">Hipótesis general del proyecto</p>
+        <p class="text-sm text-slate-600 mb-5">
+          Tomando como base la pregunta principal del proyecto: ¿Cómo afectan las variables
+          sociodemográficas y laborales al ingreso trimestral percibido por una persona?
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="rounded-xl border border-blue-200 bg-blue-50 p-5">
+            <span class="text-xs font-extrabold uppercase tracking-widest text-blue-800">H₁ · Hipótesis de investigación</span>
+            <p class="text-sm leading-7 mt-3 text-slate-700">
+              El ingreso trimestral total percibido por un hogar (ing_tri_total) se ve afectado por sus
+              variables sociodemográficas (aumentando conforme sube el nivel de escolaridad
+              nivelaprob, y variando según la edad, el sexo sexo_H y la presencia de alguna
+              discapacidad disc_*) y por su actividad laboral (cantidad de fuentes de ingreso
+              num_ingresos, horas semanales trabajadas htrab_total y número de trabajos num_trabajos).
+            </p>
+          </div>
+
+          <div class="rounded-xl border border-amber-200 bg-amber-50 p-5">
+            <span class="text-xs font-extrabold uppercase tracking-widest text-amber-900">H₀ · Hipótesis nula</span>
+            <p class="text-sm leading-7 mt-3 text-slate-700">
+              Las variables sociodemográficas y laborales seleccionadas son independientes del
+              ingreso trimestral total (ing_tri_total), por lo que no tienen relación ni explican los
+              cambios en el ingreso percibido por una persona.
+            </p>
+          </div>
+        </div>
+
+        <div class="note p-4 mt-5">
+          <p class="text-xs font-bold text-slate-800 mb-1">Nota metodológica sobre la distribución nacional</p>
+          <p class="text-sm text-slate-600 leading-6">
+            Al tomar la base completa de todo el país (252,527 registros en las 32 entidades
+            federativas), las diferencias económicas entre estados y los valores atípicos extremos
+            (como ingresos trimestrales de hasta $17,373,913.03 MXN) distorsionan la distribución
+            general, provocando que en las gráficas nacionales parezca que las variables son
+            independientes o que tienen baja correlación lineal directa.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. EDA -->
+    <section id="eda" class="bg-slate-100 border-y border-slate-200">
+      <div class="max-w-7xl mx-auto px-5 md:px-8 py-12 md:py-16">
+        <p class="eyebrow">03 · Análisis exploratorio de datos</p>
+        <h2 class="section-heading text-2xl md:text-3xl font-extrabold mt-2 mb-8">
+          EDA en dos niveles de análisis
+        </h2>
+
+        <!-- EDA INDIVIDUAL -->
+        <div class="section-card p-5 md:p-7 mb-6">
+          <div class="flex items-start gap-3 mb-5">
+            <div class="number-chip flex-shrink-0">A</div>
+            <div>
+              <h3 class="text-xl font-bold text-slate-800">Nivel individual · clean_data.csv</h3>
+              <p class="text-sm text-slate-500 mt-1">Integración de Población, Ingresos y Trabajos mediante id_per.</p>
+            </div>
+          </div>
+
+          <p class="text-sm leading-7 text-slate-600">
+            La base de datos proviene de los microdatos de la ENIGH 2024 Nueva Serie. El INEGI
+            divide los resultados en tablas separadas por tópicos. Para reunir las características
+            demográficas, la actividad laboral y los ingresos de cada persona se seleccionaron tres
+            tablas que comparten los identificadores folioviv, foliohog y numren.
+          </p>
+
+          <div class="mt-5">
+            <h4 class="font-bold text-slate-800 mb-3">Tablas originales utilizadas</h4>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tabla del INEGI</th>
+                    <th>Filas originales</th>
+                    <th>Columnas extraídas</th>
+                    <th>Relación por persona</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Población</td>
+                    <td class="mono">308,598</td>
+                    <td class="mono">14</td>
+                    <td>1 a 1 · Registro único</td>
+                  </tr>
+                  <tr>
+                    <td>Ingresos</td>
+                    <td class="mono">391,563</td>
+                    <td class="mono">6</td>
+                    <td>1 a muchos · Varios ingresos por persona</td>
+                  </tr>
+                  <tr>
+                    <td>Trabajos</td>
+                    <td class="mono">164,325</td>
+                    <td class="mono">9</td>
+                    <td>1 a muchos · Hasta 2 trabajos</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-5">
+            <div class="metric-card">
+              <div class="text-xs text-slate-500 font-semibold">Personas originales</div>
+              <div class="text-2xl font-extrabold text-slate-800 mt-1">308,598</div>
+              <div class="text-xs text-slate-500 mt-1">Tabla Población</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="text-xs text-slate-500 font-semibold">Personas finales</div>
+              <div class="text-2xl font-extrabold text-slate-800 mt-1">252,527</div>
+              <div class="text-xs text-slate-500 mt-1">Después de edad ≥ 12</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="text-xs text-slate-500 font-semibold">Columnas finales</div>
+              <div class="text-2xl font-extrabold text-slate-800 mt-1">19</div>
+              <div class="text-xs text-slate-500 mt-1">clean_data.csv</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="text-xs text-slate-500 font-semibold">Valores nulos finales</div>
+              <div class="text-2xl font-extrabold text-slate-800 mt-1">2</div>
+              <div class="text-xs text-slate-500 mt-1">En nivelaprob</div>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <h4 class="font-bold text-slate-800 mb-3">Proceso de integración y limpieza documentado</h4>
+
+            <div class="space-y-4">
+              <div class="method-step">
+                <span class="method-dot">1</span>
+                <h5 class="font-bold text-sm text-slate-800">Selección de columnas y tipos de datos</h5>
+                <p class="text-sm text-slate-600 leading-6 mt-1">
+                  Se utilizaron usecols y dtype para importar únicamente las columnas necesarias.
+                  Los identificadores folioviv, foliohog y numren se definieron como texto (str),
+                  con el fin de conservar los ceros a la izquierda.
+                </p>
+              </div>
+
+              <div class="method-step">
+                <span class="method-dot">2</span>
+                <h5 class="font-bold text-sm text-slate-800">Exploración de nulos</h5>
+                <p class="text-sm text-slate-600 leading-6 mt-1">
+                  En población, nivelaprob tenía 10,645 nulos. En ingresos hubo 0 nulos.
+                  En trabajos, las columnas clas_emp y tipoact tenían 52,114 y 123,157 nulos,
+                  respectivamente; no se ocuparon en la tabla final.
+                </p>
+              </div>
+
+              <div class="method-step">
+                <span class="method-dot">3</span>
+                <h5 class="font-bold text-sm text-slate-800">Identificador id_per</h5>
+                <p class="text-sm text-slate-600 leading-6 mt-1">
+                  Se concatenaron folioviv + foliohog + numren para formar una llave de
+                  13 dígitos por individuo. id_per fue único en población (True), pero no en
+                  ingresos ni trabajos (False), porque una persona puede tener varios ingresos
+                  y más de un empleo.
+                </p>
+              </div>
+
+              <div class="method-step">
+                <span class="method-dot">4</span>
+                <h5 class="font-bold text-sm text-slate-800">Agrupación de ingresos y trabajos</h5>
+                <p class="text-sm text-slate-600 leading-6 mt-1">
+                  La tabla ingresos se agrupó por id_per y se sumó ing_tri para obtener
+                  ing_tri_total; también se contó clave para obtener num_ingresos.
+                  En trabajos se sumaron las horas htrab en htrab_total y se contó id_trabajo
+                  para obtener num_trabajos.
+                </p>
+              </div>
+
+              <div class="method-step">
+                <span class="method-dot">5</span>
+                <h5 class="font-bold text-sm text-slate-800">Unión left y ceros estructurales</h5>
+                <p class="text-sm text-slate-600 leading-6 mt-1">
+                  Se realizaron dos merge con how='left' para conservar las 308,598 personas.
+                  Los valores NaN de ing_tri_total, num_ingresos, htrab_total y num_trabajos
+                  se rellenaron con 0 para personas sin registro de ingreso o trabajo.
+                </p>
+              </div>
+
+              <div class="method-step">
+                <span class="method-dot">6</span>
+                <h5 class="font-bold text-sm text-slate-800">Encoding de discapacidad y sexo</h5>
+                <p class="text-sm text-slate-600 leading-6 mt-1">
+                  Las variables disc_ver a disc_acti se convirtieron a valores binarios:
+                  '1' = 0 y cualquier otro valor = 1. Para sexo se sustituyó '1' por 'H'
+                  y '2' por 'F', aplicando pd.get_dummies(..., drop_first=True, dtype=int)
+                  para obtener sexo_H (1 = hombre, 0 = mujer).
+                </p>
+              </div>
+
+              <div class="method-step">
+                <span class="method-dot">7</span>
+                <h5 class="font-bold text-sm text-slate-800">Filtro de edad y exportación</h5>
+                <p class="text-sm text-slate-600 leading-6 mt-1">
+                  Se filtraron las personas con edad >= 12 años. La base resultante quedó
+                  en 252,527 registros y 19 columnas, con 2 valores nulos en nivelaprob,
+                  y se exportó como clean_data.csv.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="note p-4 mt-6">
+            <p class="text-xs font-bold text-slate-800 mb-1">Distribución nacional e ingresos extremos</p>
+            <p class="text-sm text-slate-600 leading-6">
+              El reporte describe 252,527 registros en las 32 entidades federativas y un
+              ingreso trimestral extremo de hasta $17,373,913.03 MXN. También señala la
+              presencia de personas de entre 12 y 18 años, personas sin ingresos y una
+              dispersión muy alta en el análisis individual.
+            </p>
+          </div>
+        </div>
+
+        <!-- CORRELACIONES -->
+        <div class="section-card p-5 md:p-7 mb-6">
+          <h3 class="text-lg font-bold text-slate-800">Correlaciones documentadas en ml.ipynb</h3>
+          <p class="text-sm text-slate-600 leading-6 mt-2">
+            El notebook ml.ipynb calcula la matriz mediante
+            <span class="mono text-blue-800">train_set.corr(numeric_only=True)</span>.
+            Los coeficientes siguientes son los valores Pearson obtenidos en train_set.
+          </p>
+
+          <div class="table-wrap mt-4">
+            <table>
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Correlación Pearson con ing_cor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>ing_cor</td><td class="mono">1.000000</td></tr>
+                <tr><td>perc_ocupa</td><td class="mono">0.375766</td></tr>
+                <tr><td>percep_ing</td><td class="mono">0.363766</td></tr>
+                <tr><td>ocupados</td><td class="mono">0.345224</td></tr>
+                <tr><td>mayores</td><td class="mono">0.329767</td></tr>
+                <tr><td>p12_64</td><td class="mono">0.319289</td></tr>
+                <tr><td>tot_integ</td><td class="mono">0.268383</td></tr>
+                <tr><td>hombres</td><td class="mono">0.228660</td></tr>
+                <tr><td>mujeres</td><td class="mono">0.187071</td></tr>
+                <tr><td>menores</td><td class="mono">0.033076</td></tr>
+                <tr><td>p65mas</td><td class="mono">-0.047446</td></tr>
+                <tr><td>edad_jefe</td><td class="mono">-0.059550</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-5">
+            <div class="chart-container tall">
+              <canvas id="pearsonChart"></canvas>
+            </div>
+          </div>
+
+          <div class="note p-4 mt-5">
+            <p class="text-sm text-slate-700 leading-6">
+              Los documentos adjuntos no presentan coeficientes numéricos Spearman ni una
+              comparativa Pearson–Spearman a nivel individual. Tampoco se localiza una
+              ejecución o resultado de la transformación log1p en los notebooks o en el reporte.
+              Por ello, no se agregan coeficientes ni gráficas de Spearman o de log1p.
+            </p>
+          </div>
+        </div>
+
+        <!-- EDA HOGAR -->
+        <div class="section-card p-5 md:p-7">
+          <div class="flex items-start gap-3 mb-5">
+            <div class="number-chip flex-shrink-0">B</div>
+            <div>
+              <h3 class="text-xl font-bold text-slate-800">Nivel hogar · concentradohogar</h3>
+              <p class="text-sm text-slate-500 mt-1">Análisis de ingreso corriente y características sociodemográficas del hogar.</p>
+            </div>
+          </div>
+
+          <h4 class="font-bold text-slate-800 mb-2">Justificación del cambio de unidad de análisis</h4>
+          <p class="text-sm text-slate-600 leading-7">
+            Después de realizar la limpieza y algunas pruebas con la base de datos por persona,
+            se encontraron impedimentos como la alta presencia de personas de entre 12 y 18 años,
+            personas sin ingresos y una dispersión muy alta. El reporte señala que el diseño
+            metodológico de la ENIGH tiene como objetivo principal obtener información por hogares,
+            dejando los datos de personas como un tema secundario. Por ello se tomó la decisión de
+            trabajar con la tabla de concentrado hogares, que contiene variables relevantes de
+            ingresos, gastos y características sociodemográficas por hogar.
+          </p>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5">
+            <div class="metric-card">
+              <div class="text-xs text-slate-500">Hogares originales en EDA_Hog</div>
+              <div class="text-2xl font-extrabold mt-1">91,414</div>
+              <div class="text-xs text-slate-500 mt-1">44 columnas</div>
+            </div>
+            <div class="metric-card">
+              <div class="text-xs text-slate-500">Valores nulos</div>
+              <div class="text-2xl font-extrabold mt-1">0</div>
+              <div class="text-xs text-slate-500 mt-1">Total del dataset</div>
+            </div>
+            <div class="metric-card">
+              <div class="text-xs text-slate-500">Hogares después de IQR</div>
+              <div class="text-2xl font-extrabold mt-1">83,454</div>
+              <div class="text-xs text-slate-500 mt-1">44 columnas</div>
+            </div>
+            <div class="metric-card">
+              <div class="text-xs text-slate-500">Máximo posterior a IQR</div>
+              <div class="text-xl font-extrabold mt-1">$143,138.19</div>
+              <div class="text-xs text-slate-500 mt-1">MXN trimestrales</div>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <h4 class="font-bold text-slate-800 mb-3">Depuración de valores atípicos mediante IQR</h4>
+            <p class="text-sm text-slate-600 leading-6 mb-3">
+              Se calcularon q1 y q3 para ing_cor. El límite inferior resultó negativo; como la
+              base no tiene ingresos negativos, la depuración se aplicó únicamente por encima
+              del límite superior.
+            </p>
+
+            <div class="grid sm:grid-cols-2 gap-3">
+              <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
+                <div class="text-xs font-bold uppercase tracking-wider text-slate-500">Límite inferior calculado</div>
+                <div class="text-lg font-extrabold text-slate-800 mono mt-1">-19800.487500000003</div>
+              </div>
+              <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
+                <div class="text-xs font-bold uppercase tracking-wider text-slate-500">Límite superior calculado</div>
+                <div class="text-lg font-extrabold text-slate-800 mono mt-1">143162.0925</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="note p-4 mt-5">
+            <p class="text-sm text-slate-700 leading-6">
+              En el reporte se describe el límite como $143,162 MXN trimestrales. En el apartado
+              de modelado del mismo reporte aparece $143,138.19 MXN. En EDA_Hog.ipynb el límite
+              superior calculado es 143162.0925 y el máximo observado después del filtro es
+              143138.190000. Se conservan aquí los valores de cada fuente sin sustituir uno por otro.
+            </p>
+          </div>
+
+          <div class="mt-6">
+            <h4 class="font-bold text-slate-800 mb-3">Estadísticos descriptivos exactos</h4>
+            <p class="text-xs text-slate-500 mb-3">
+              Salidas de EDA_Hog.ipynb y ml.ipynb para las variables utilizadas en el análisis.
+            </p>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Variable</th>
+                    <th>count</th>
+                    <th>mean</th>
+                    <th>std</th>
+                    <th>min</th>
+                    <th>25%</th>
+                    <th>50%</th>
+                    <th>75%</th>
+                    <th>max</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>ing_cor</td>
+                    <td class="mono">83454.000000</td>
+                    <td class="mono">57616.598252</td>
+                    <td class="mono">31731.393603</td>
+                    <td class="mono">0.000000</td>
+                    <td class="mono">32754.090000</td>
+                    <td class="mono">51577.310000</td>
+                    <td class="mono">77609.145000</td>
+                    <td class="mono">143138.190000</td>
+                  </tr>
+                  <tr>
+                    <td>edad_jefe</td>
+                    <td class="mono">83454.000000</td>
+                    <td class="mono">51.465047</td>
+                    <td class="mono">16.168182</td>
+                    <td class="mono">14.000000</td>
+                    <td class="mono">39.000000</td>
+                    <td class="mono">50.000000</td>
+                    <td class="mono">63.000000</td>
+                    <td class="mono">106.000000</td>
+                  </tr>
+                  <tr>
+                    <td>tot_integ</td>
+                    <td class="mono">83454.000000</td>
+                    <td class="mono">3.315192</td>
+                    <td class="mono">1.726216</td>
+                    <td class="mono">1.000000</td>
+                    <td class="mono">2.000000</td>
+                    <td class="mono">3.000000</td>
+                    <td class="mono">4.000000</td>
+                    <td class="mono">20.000000</td>
+                  </tr>
+                  <tr>
+                    <td>ocupados</td>
+                    <td class="mono">83454.000000</td>
+                    <td class="mono">1.573789</td>
+                    <td class="mono">1.037695</td>
+                    <td class="mono">0.000000</td>
+                    <td class="mono">1.000000</td>
+                    <td class="mono">1.000000</td>
+                    <td class="mono">2.000000</td>
+                    <td class="mono">11.000000</td>
+                  </tr>
+                  <tr>
+                    <td>percep_ing</td>
+                    <td class="mono">83454.000000</td>
+                    <td class="mono">2.127903</td>
+                    <td class="mono">1.098368</td>
+                    <td class="mono">0.000000</td>
+                    <td class="mono">1.000000</td>
+                    <td class="mono">2.000000</td>
+                    <td class="mono">3.000000</td>
+                    <td class="mono">13.000000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="mt-7">
+            <h4 class="font-bold text-slate-800 mb-3">Distribución de hogares por tipo</h4>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Tipo de hogar · clase_hog</th><th>Cantidad de hogares</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Nuclear</td><td class="mono">51443</td></tr>
+                  <tr><td>Ampliado</td><td class="mono">19143</td></tr>
+                  <tr><td>Unipersonal</td><td class="mono">12151</td></tr>
+                  <tr><td>Compuesto</td><td class="mono">469</td></tr>
+                  <tr><td>Corresidente</td><td class="mono">248</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="chart-container mt-4">
+              <canvas id="houseTypeChart"></canvas>
+            </div>
+          </div>
+
+          <div class="mt-7">
+            <h4 class="font-bold text-slate-800 mb-3">Distribución de hogares por tamaño de localidad</h4>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Tamaño de localidad · tam_loc</th><th>Cantidad de hogares</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Menos de 2,500 hab</td><td class="mono">34551</td></tr>
+                  <tr><td>Mas de 100,000 hab</td><td class="mono">29063</td></tr>
+                  <tr><td>De 2,500 a 14,999 hab</td><td class="mono">10239</td></tr>
+                  <tr><td>De 15,000 a 99,999 hab</td><td class="mono">9601</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="chart-container mt-4">
+              <canvas id="localityChart"></canvas>
+            </div>
+
+            <p class="text-sm text-slate-600 leading-6 mt-3">
+              La mayoría de hogares se encuentran en localidades de menos de 2,500 habitantes.
+              El ingreso promedio es mayor en los hogares que habitan en localidades de más de
+              100,000 habitantes.
+            </p>
+
+            <div class="table-wrap mt-4">
+              <table>
+                <thead>
+                  <tr><th>Tamaño de localidad</th><th>Ingreso promedio (MXN)</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Mas de 100,000 hab</td><td class="mono">70029.738094</td></tr>
+                  <tr><td>De 15,000 a 99,999 hab</td><td class="mono">60909.180158</td></tr>
+                  <tr><td>De 2,500 a 14,999 hab</td><td class="mono">54319.339798</td></tr>
+                  <tr><td>Menos de 2,500 hab</td><td class="mono">47237.317399</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="mt-7">
+            <h4 class="font-bold text-slate-800 mb-3">Otras características descriptivas documentadas</h4>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Variable</th>
+                    <th>count</th>
+                    <th>mean</th>
+                    <th>std</th>
+                    <th>min</th>
+                    <th>25%</th>
+                    <th>50%</th>
+                    <th>75%</th>
+                    <th>max</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>hombres</td>
+                    <td class="mono">83454.000000</td>
+                    <td class="mono">1.592386</td>
+                    <td class="mono">1.082879</td>
+                    <td class="mono">0.000000</td>
+                    <td class="mono">1.000000</td>
+                    <td class="mono">1.000000</td>
+                    <td class="mono">2.000000</td>
+                    <td class="mono">10.000000</td>
+                  </tr>
+                  <tr>
+                    <td>mujeres</td>
+                    <td class="mono">83454.000000</td>
+                    <td class="mono">1.722805</td>
+                    <td class="mono">1.150927</td>
+                    <td class="mono">0.000000</td>
+                    <td class="mono">1.000000</td>
+                    <td class="mono">2.000000</td>
+                    <td class="mono">2.000000</td>
+                    <td class="mono">11.000000</td>
+                  </tr>
+                  <tr>
+                    <td>mayores</td>
+                    <td class="mono">83454.000000</td>
+                    <td class="mono">2.696527</td>
+                    <td class="mono">1.312653</td>
+                    <td class="mono">1.000000</td>
+                    <td class="mono">2.000000</td>
+                    <td class="mono">2.000000</td>
+                    <td class="mono">3.000000</td>
+                    <td class="mono">14.000000</td>
+                  </tr>
+                  <tr>
+                    <td>menores</td>
+                    <td class="mono">83454.000000</td>
+                    <td class="mono">0.618664</td>
+                    <td class="mono">0.919138</td>
+                    <td class="mono">0.000000</td>
+                    <td class="mono">0.000000</td>
+                    <td class="mono">0.000000</td>
+                    <td class="mono">1.000000</td>
+                    <td class="mono">9.000000</td>
+                  </tr>
+                  <tr>
+                    <td>p12_64</td>
+                    <td class="mono">83454.000000</td>
+                    <td class="mono">2.351763</td>
+                    <td class="mono">1.447741</td>
+                    <td class="mono">0.000000</td>
+                    <td class="mono">1.000000</td>
+                    <td class="mono">2.000000</td>
+                    <td class="mono">3.000000</td>
+                    <td class="mono">14.000000</td>
+                  </tr>
+                  <tr>
+                    <td>p65mas</td>
+                    <td class="mono">83454.000000</td>
+                    <td class="mono">0.344765</td>
+                    <td class="mono">0.625418</td>
+                    <td class="mono">0.000000</td>
+                    <td class="mono">0.000000</td>
+                    <td class="mono">0.000000</td>
+                    <td class="mono">1.000000</td>
+                    <td class="mono">5.000000</td>
+                  </tr>
+                  <tr>
+                    <td>perc_ocupa</td>
+                    <td class="mono">83454.000000</td>
+                    <td class="mono">1.520670</td>
+                    <td class="mono">0.992427</td>
+                    <td class="mono">0.000000</td>
+                    <td class="mono">1.000000</td>
+                    <td class="mono">1.000000</td>
+                    <td class="mono">2.000000</td>
+                    <td class="mono">8.000000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="mt-7">
+            <h4 class="font-bold text-slate-800 mb-3">Otros resultados descriptivos reportados</h4>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Variable</th><th>count</th><th>mean</th><th>std</th><th>min</th><th>25%</th><th>50%</th><th>75%</th><th>max</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>sueldos</td><td class="mono">83454.000000</td><td class="mono">28124.667655</td><td class="mono">27004.310697</td><td class="mono">0.000000</td><td class="mono">0.000000</td><td class="mono">23606.550000</td><td class="mono">44471.540000</td><td class="mono">142417.570000</td>
+                  </tr>
+                  <tr>
+                    <td>negocio</td><td class="mono">83454.000000</td><td class="mono">5028.353062</td><td class="mono">13168.135377</td><td class="mono">0.000000</td><td class="mono">0.000000</td><td class="mono">0.000000</td><td class="mono">1614.130000</td><td class="mono">140062.490000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="mt-7">
+            <h4 class="font-bold text-slate-800 mb-3">Ingreso promedio por estrato socioeconómico</h4>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Estrato socioeconómico</th><th>Ingreso promedio (MXN)</th><th>Cantidad de hogares</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Alto</td><td class="mono">83714.849740</td><td class="mono">5382</td></tr>
+                  <tr><td>Medio Alto</td><td class="mono">69431.313115</td><td class="mono">15713</td></tr>
+                  <tr><td>Medio Bajo</td><td class="mono">56398.300344</td><td class="mono">43875</td></tr>
+                  <tr><td>Bajo</td><td class="mono">42865.863378</td><td class="mono">18484</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="mt-7">
+            <h4 class="font-bold text-slate-800 mb-3">Ingreso promedio por nivel de educación del jefe del hogar</h4>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Educación del jefe</th><th>Ingreso promedio (MXN)</th><th>Cantidad de hogares</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Basico</td><td class="mono">49032.591237</td><td class="mono">29379</td></tr>
+                  <tr><td>Posgrado</td><td class="mono">91512.243449</td><td class="mono">1099</td></tr>
+                  <tr><td>Prepa comp</td><td class="mono">64819.620922</td><td class="mono">11611</td></tr>
+                  <tr><td>Prepa inc</td><td class="mono">61546.598747</td><td class="mono">2617</td></tr>
+                  <tr><td>Profesional comp</td><td class="mono">80061.237522</td><td class="mono">7533</td></tr>
+                  <tr><td>Profesional inc</td><td class="mono">71622.569000</td><td class="mono">2459</td></tr>
+                  <tr><td>Secundaria</td><td class="mono">58000.310899</td><td class="mono">23446</td></tr>
+                  <tr><td>Sin Educacion</td><td class="mono">40386.173418</td><td class="mono">5310</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. PRUEBA DE GÉNERO -->
+    <section id="genero" class="max-w-7xl mx-auto px-5 md:px-8 py-12 md:py-16">
+      <p class="eyebrow">04 · Prueba de hipótesis</p>
+      <h2 class="section-heading text-2xl md:text-3xl font-extrabold mt-2 mb-3">
+        Diferencias de ingreso por sexo de jefatura
+      </h2>
+      <p class="text-sm text-slate-600 leading-6 max-w-4xl mb-7">
+        Comparación del ingreso corriente trimestral de los hogares con jefatura masculina
+        y femenina, usando los datos de df_eda.csv después de la eliminación de valores atípicos.
+      </p>
+
+      <div class="section-card p-5 md:p-7">
+        <h3 class="text-lg font-bold text-slate-800 mb-4">Estadísticos descriptivos por grupo</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Estadístico</th>
+                <th>Hombre</th>
+                <th>Mujer</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>count</td><td class="mono">55999.000000</td><td class="mono">27455.000000</td></tr>
+              <tr><td>mean</td><td class="mono">58769.150825</td><td class="mono">55265.777218</td></tr>
+              <tr><td>std</td><td class="mono">31848.989833</td><td class="mono">31359.710360</td></tr>
+              <tr><td>min</td><td class="mono">0.000000</td><td class="mono">0.000000</td></tr>
+              <tr><td>25%</td><td class="mono">33823.680000</td><td class="mono">30833.005000</td></tr>
+              <tr><td>50% · Mediana</td><td class="mono">52826.080000</td><td class="mono">48958.480000</td></tr>
+              <tr><td>75%</td><td class="mono">79137.845000</td><td class="mono">74525.570000</td></tr>
+              <tr><td>max</td><td class="mono">143138.190000</td><td class="mono">143092.250000</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-5">
+          <div class="metric-card">
+            <p class="text-xs text-slate-500 font-semibold">Hogares con jefe hombre</p>
+            <p class="text-2xl font-extrabold mt-1">55,999</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-xs text-slate-500 font-semibold">Hogares con jefa mujer</p>
+            <p class="text-2xl font-extrabold mt-1">27,455</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-xs text-slate-500 font-semibold">Media · Hombre</p>
+            <p class="text-xl font-extrabold mt-1">$58,769.150825</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-xs text-slate-500 font-semibold">Media · Mujer</p>
+            <p class="text-xl font-extrabold mt-1">$55,265.777218</p>
+          </div>
+        </div>
+
+        <div class="mt-5 rounded-xl bg-blue-50 border border-blue-100 p-5">
+          <p class="text-xs font-extrabold uppercase tracking-wider text-blue-800">Diferencia de medias reportada por el notebook</p>
+          <p class="text-3xl md:text-4xl font-extrabold text-blue-950 mt-2">$3,503.373606843081 MXN</p>
+          <p class="text-sm text-blue-800 mt-2">Diferencia de ingreso corriente trimestral: hombres menos mujeres.</p>
+        </div>
+
+        <div class="mt-7">
+          <h4 class="font-bold text-slate-800 mb-2">Comparación de ingreso medio y mediano</h4>
+          <div class="chart-container">
+            <canvas id="genderChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card p-5 md:p-7 mt-5">
+        <h3 class="text-lg font-bold text-slate-800 mb-4">Contraste de hipótesis para la diferencia de medias</h3>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="rounded-xl bg-slate-50 p-4 border border-slate-200">
+            <p class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">H₀ · Hipótesis nula</p>
+            <p class="text-sm text-slate-700 leading-6 mt-2">
+              No hay evidencia suficiente para afirmar que los ingresos promedio sean distintos.
+            </p>
+          </div>
+          <div class="rounded-xl bg-blue-50 p-4 border border-blue-200">
+            <p class="text-xs font-extrabold text-blue-800 uppercase tracking-wider">H₁ · Hipótesis alternativa</p>
+            <p class="text-sm text-slate-700 leading-6 mt-2">
+              Existe una diferencia estadísticamente significativa entre los ingresos promedio
+              de hombres y mujeres.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-6 space-y-6">
+          <div class="method-step">
+            <span class="method-dot">1</span>
+            <h4 class="font-bold text-slate-800">Kolmogorov-Smirnov · Lilliefors</h4>
+            <p class="text-sm text-slate-600 leading-6 mt-2">
+              Se evaluó el supuesto de normalidad en ambas muestras mediante
+              <span class="mono">lilliefors(..., dist='norm')</span>. El Teorema del Límite Central
+              se utilizó como justificación para continuar con las pruebas de varianzas y medias
+              ante el tamaño de las muestras.
+            </p>
+
+            <div class="table-wrap mt-3">
+              <table>
+                <thead>
+                  <tr><th>Grupo</th><th>Estadístico K-S</th><th>P-valor</th><th>Resultado</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Hogares con jefe hombre</td>
+                    <td class="mono">0.0746</td>
+                    <td class="mono">0.0010</td>
+                    <td>Se rechaza H₀</td>
+                  </tr>
+                  <tr>
+                    <td>Hogares con jefa mujer</td>
+                    <td class="mono">0.0812</td>
+                    <td class="mono">0.0010</td>
+                    <td>Se rechaza H₀</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p class="text-sm text-slate-600 mt-3 leading-6">
+              En ambas muestras la distribución es distinta a una distribución normal. El notebook
+              señala que, aunque los histogramas muestran una forma similar a una campana, también
+              se observa sesgo a la derecha. Para continuar con las pruebas se apela al Teorema
+              del Límite Central.
+            </p>
+          </div>
+
+          <div class="method-step">
+            <span class="method-dot">2</span>
+            <h4 class="font-bold text-slate-800">Prueba F de Fisher · Igualdad de varianzas</h4>
+            <p class="text-sm text-slate-600 leading-6 mt-2">
+              La prueba se realizó paso a paso. Las muestras se trataron como mutuamente
+              excluyentes e independientes. Se asumió distribución normal por el Teorema del
+              Límite Central y se utilizó una prueba de dos colas con alpha = 0.05.
+            </p>
+
+            <div class="table-wrap mt-3">
+              <table>
+                <thead>
+                  <tr><th>Estadístico</th><th>Valor</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Grados de libertad · hombres</td><td class="mono">55998</td></tr>
+                  <tr><td>Grados de libertad · mujeres</td><td class="mono">27454</td></tr>
+                  <tr><td>Varianza · hombres</td><td class="mono">1014358153.401205</td></tr>
+                  <tr><td>Varianza · mujeres</td><td class="mono">983431433.8522383</td></tr>
+                  <tr><td>Varianza superior</td><td>Hombres</td></tr>
+                  <tr><td>Estadístico F</td><td class="mono">1.031447763905433</td></tr>
+                  <tr><td>Límite inferior</td><td class="mono">0.9798204750096441</td></tr>
+                  <tr><td>Límite superior</td><td class="mono">1.0206689233135156</td></tr>
+                  <tr><td>P-valor</td><td class="mono">0.003025</td></tr>
+                  <tr><td>Significancia</td><td class="mono">0.05</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-4">
+              <p class="text-sm font-bold text-amber-900">Resultado de la prueba F</p>
+              <p class="text-sm text-slate-700 leading-6 mt-1">
+                Existe evidencia estadística para rechazar H₀ y asumir que las varianzas son
+                distintas. El notebook indica que el estadístico F fue 1.031447763905433,
+                por encima del límite superior 1.0206689233135156. El p-valor fue 0.003025.
+              </p>
+            </div>
+          </div>
+
+          <div class="method-step">
+            <span class="method-dot">3</span>
+            <h4 class="font-bold text-slate-800">Prueba t de Welch · Varianzas desiguales</h4>
+            <p class="text-sm text-slate-600 leading-6 mt-2">
+              Como la prueba F mostró varianzas distintas, se utilizó
+              <span class="mono">stats.ttest_ind(..., equal_var=False)</span> para comparar
+              las medias de ingreso.
+            </p>
+
+            <div class="table-wrap mt-3">
+              <table>
+                <thead><tr><th>Estadístico</th><th>Valor</th></tr></thead>
+                <tbody>
+                  <tr><td>Estadístico t</td><td class="mono">15.0854</td></tr>
+                  <tr><td>Grados de libertad (Welch)</td><td class="mono">55,307.28</td></tr>
+                  <tr><td>P-valor</td><td class="mono">2.5572e-51</td></tr>
+                  <tr><td>Límite crítico inferior</td><td class="mono">-1.9600</td></tr>
+                  <tr><td>Límite crítico superior</td><td class="mono">1.9600</td></tr>
+                  <tr><td>Alpha</td><td class="mono">0.05</td></tr>
+                  <tr><td>Media de hombres</td><td class="mono">58769.15082483616</td></tr>
+                  <tr><td>Media de mujeres</td><td class="mono">55265.777217993076</td></tr>
+                  <tr><td>Diferencia</td><td class="mono">3503.373606843081</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4">
+              <p class="text-sm font-bold text-blue-900">Resultado de la prueba t de Welch</p>
+              <p class="text-sm text-slate-700 leading-6 mt-1">
+                Se rechaza H₀ (p < 0.05). Existe una diferencia estadísticamente significativa
+                entre los ingresos promedio de hombres y mujeres.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. MACHINE LEARNING -->
+    <section id="modelos" class="bg-slate-100 border-y border-slate-200">
+      <div class="max-w-7xl mx-auto px-5 md:px-8 py-12 md:py-16">
+        <p class="eyebrow">05 · Machine Learning</p>
+        <h2 class="section-heading text-2xl md:text-3xl font-extrabold mt-2 mb-3">
+          Modelado de hogares: K-Means y KNN
+        </h2>
+        <p class="text-sm text-slate-600 leading-6 max-w-4xl mb-8">
+          Modelado realizado con df_ml.csv, con 83,454 registros posteriores a la depuración
+          de valores atípicos sobre la variable ing_cor.
+        </p>
+
+        <!-- PREPROCESAMIENTO -->
+        <div class="section-card p-5 md:p-7 mb-5">
+          <h3 class="text-lg font-bold text-slate-800 mb-4">Preprocesamiento</h3>
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="metric-card">
+              <p class="text-xs text-slate-500 font-semibold">Registros</p>
+              <p class="text-2xl font-extrabold mt-1">83,454</p>
+            </div>
+            <div class="metric-card">
+              <p class="text-xs text-slate-500 font-semibold">Columnas tras dummies</p>
+              <p class="text-2xl font-extrabold mt-1">30</p>
+              <p class="text-xs text-slate-500">Incluye ing_cor</p>
+            </div>
+            <div class="metric-card">
+              <p class="text-xs text-slate-500 font-semibold">Predictores X</p>
+              <p class="text-2xl font-extrabold mt-1">29</p>
+            </div>
+            <div class="metric-card">
+              <p class="text-xs text-slate-500 font-semibold">Vecinos KNN</p>
+              <p class="text-2xl font-extrabold mt-1">31</p>
+            </div>
+          </div>
+
+          <div class="mt-5 space-y-3 text-sm text-slate-600 leading-6">
+            <p>
+              Las variables categóricas transformadas con pd.get_dummies fueron:
+              tam_loc, est_socio, clase_hog, sexo_jefe y educa_jefe.
+              Se utilizó drop_first=True para evitar multicolinealidad perfecta.
+            </p>
+            <p>
+              Los identificadores descartados fueron folioviv, foliohog y ubica_geo.
+              El resultado de crear dummies fue (83454, 30). Después de separar ing_cor
+              como objetivo, X contiene 29 variables predictoras.
+            </p>
+            <p>
+              Se aplicó StandardScaler. Para los modelos KNN, el escalador se ajustó
+              únicamente con el conjunto de entrenamiento y después se transformó el
+              conjunto de prueba.
+            </p>
+          </div>
+        </div>
+
+        <!-- K MEANS -->
+        <div class="section-card p-5 md:p-7 mb-5">
+          <div class="flex flex-wrap justify-between items-start gap-3">
+            <div>
+              <h3 class="text-xl font-extrabold text-slate-800">Clustering no supervisado · K-Means</h3>
+              <p class="text-sm text-slate-500 mt-1">Método del codo · selección de k = 3</p>
+            </div>
+            <span class="rounded-full bg-blue-100 text-blue-900 px-3 py-1.5 font-bold text-sm">k = 3</span>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-3 mt-5">
+            <div class="metric-card">
+              <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Inercia</p>
+              <p class="text-2xl font-extrabold text-slate-900 mono mt-2">2,019,131.93</p>
+            </div>
+            <div class="metric-card">
+              <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Coeficiente de silueta</p>
+              <p class="text-2xl font-extrabold text-slate-900 mono mt-2">0.1093</p>
+            </div>
+          </div>
+
+          <p class="text-sm text-slate-600 leading-6 mt-5">
+            Para determinar el número óptimo de clústeres se evaluó la inercia en un rango
+            de k ∈ [2, 7]. El análisis del método del codo reveló un punto de inflexión claro
+            en k = 3.
+          </p>
+
+          <div class="chart-container mt-5">
+            <canvas id="clusterIncomeChart"></canvas>
+          </div>
+
+          <h4 class="font-bold text-slate-800 mt-7 mb-4">Perfiles promedio de los clústeres</h4>
+
+          <div class="grid lg:grid-cols-3 gap-4">
+            <div class="metric-card cluster-top">
+              <p class="text-xs uppercase tracking-widest font-extrabold text-blue-700">Clúster 0</p>
+              <h4 class="font-extrabold text-lg text-slate-800 mt-2">Hogares ampliados de alto ingreso / Mayor fuerza laboral</h4>
+              <p class="text-2xl font-extrabold text-blue-800 mt-4">$75,035.57</p>
+              <p class="text-xs text-slate-500">Ingreso corriente promedio trimestral · MXN</p>
+
+              <div class="border-t border-slate-200 mt-4 pt-4 space-y-2 text-sm text-slate-600">
+                <div class="flex justify-between gap-2"><span>Participación</span><strong>22.46%</strong></div>
+                <div class="flex justify-between gap-2"><span>Hogares</span><strong>18,741</strong></div>
+                <div class="flex justify-between gap-2"><span>Integrantes promedio</span><strong>5.45</strong></div>
+                <div class="flex justify-between gap-2"><span>Hogares ampliados</span><strong>62.3%</strong></div>
+                <div class="flex justify-between gap-2"><span>Perceptores promedio</span><strong>3.49</strong></div>
+                <div class="flex justify-between gap-2"><span>Ocupados promedio</span><strong>2.76</strong></div>
+              </div>
+
+              <div class="border-t border-slate-200 mt-4 pt-4 space-y-2 text-xs text-slate-500">
+                <div class="flex justify-between"><span>Edad jefe promedio</span><strong class="text-slate-700">53.56</strong></div>
+                <div class="flex justify-between"><span>Menores promedio</span><strong class="text-slate-700">1.00</strong></div>
+                <div class="flex justify-between"><span>p65mas promedio</span><strong class="text-slate-700">0.37</strong></div>
+              </div>
+            </div>
+
+            <div class="metric-card cluster-mid">
+              <p class="text-xs uppercase tracking-widest font-extrabold text-cyan-800">Clúster 1</p>
+              <h4 class="font-extrabold text-lg text-slate-800 mt-2">Hogares nucleares estándar</h4>
+              <p class="text-2xl font-extrabold text-cyan-800 mt-4">$57,058.12</p>
+              <p class="text-xs text-slate-500">Ingreso corriente promedio trimestral · MXN</p>
+
+              <div class="border-t border-slate-200 mt-4 pt-4 space-y-2 text-sm text-slate-600">
+                <div class="flex justify-between gap-2"><span>Participación</span><strong>51.22%</strong></div>
+                <div class="flex justify-between gap-2"><span>Hogares</span><strong>42,741</strong></div>
+                <div class="flex justify-between gap-2"><span>Hogares nucleares</span><strong>88.3%</strong></div>
+                <div class="flex justify-between gap-2"><span>Edad jefe promedio</span><strong>43.96</strong></div>
+                <div class="flex justify-between gap-2"><span>Integrantes promedio</span><strong>3.27</strong></div>
+              </div>
+
+              <div class="border-t border-slate-200 mt-4 pt-4 space-y-2 text-xs text-slate-500">
+                <div class="flex justify-between"><span>Ocupados promedio</span><strong class="text-slate-700">1.50</strong></div>
+                <div class="flex justify-between"><span>Perceptores promedio</span><strong class="text-slate-700">1.89</strong></div>
+                <div class="flex justify-between"><span>Menores promedio</span><strong class="text-slate-700">0.75</strong></div>
+                <div class="flex justify-between"><span>p65mas promedio</span><strong class="text-slate-700">0.07</strong></div>
+              </div>
+            </div>
+
+            <div class="metric-card cluster-low">
+              <p class="text-xs uppercase tracking-widest font-extrabold text-amber-800">Clúster 2</p>
+              <h4 class="font-extrabold text-lg text-slate-800 mt-2">Hogares unipersonales / Adultos mayores</h4>
+              <p class="text-2xl font-extrabold text-amber-800 mt-4">$43,845.47</p>
+              <p class="text-xs text-slate-500">Ingreso corriente promedio trimestral · MXN</p>
+
+              <div class="border-t border-slate-200 mt-4 pt-4 space-y-2 text-sm text-slate-600">
+                <div class="flex justify-between gap-2"><span>Participación</span><strong>26.33%</strong></div>
+                <div class="flex justify-between gap-2"><span>Hogares</span><strong>21,972</strong></div>
+                <div class="flex justify-between gap-2"><span>Unipersonales</span><strong>55.3%</strong></div>
+                <div class="flex justify-between gap-2"><span>Edad jefe promedio</span><strong>64.28</strong></div>
+                <div class="flex justify-between gap-2"><span>Ocupados promedio</span><strong>0.70</strong></div>
+              </div>
+
+              <div class="border-t border-slate-200 mt-4 pt-4 space-y-2 text-xs text-slate-500">
+                <div class="flex justify-between"><span>Integrantes promedio</span><strong class="text-slate-700">1.59</strong></div>
+                <div class="flex justify-between"><span>Perceptores promedio</span><strong class="text-slate-700">1.43</strong></div>
+                <div class="flex justify-between"><span>Menores promedio</span><strong class="text-slate-700">0.03</strong></div>
+                <div class="flex justify-between"><span>p65mas promedio</span><strong class="text-slate-700">0.86</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KNN -->
+        <div class="section-card p-5 md:p-7">
+          <h3 class="text-xl font-extrabold text-slate-800">Aprendizaje supervisado · K-Nearest Neighbors</h3>
+          <p class="text-sm text-slate-600 leading-6 mt-2">
+            El notebook K_Means_&_KNN.ipynb utiliza KNeighborsClassifier y
+            KNeighborsRegressor con n_neighbors=31, weights='uniform' y n_jobs=-1.
+            La separación Train/Test se realizó con test_size=0.20 y random_state=42,
+            estratificando por los terciles de ingreso.
+          </p>
+
+          <div class="mt-6">
+            <h4 class="font-bold text-slate-800 mb-3">Comparativa de accuracy documentada</h4>
+            <div class="chart-container">
+              <canvas id="knnAccuracyChart"></canvas>
+            </div>
+          </div>
+
+          <div class="mt-7">
+            <h4 class="font-bold text-slate-800 mb-3">Métricas de los cuatro modelos supervisados</h4>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Modelo</th>
+                    <th>Accuracy</th>
+                    <th>F1 / R²</th>
+                    <th>MAE (MXN)</th>
+                    <th>RMSE (MXN)</th>
+                    <th>Fuente</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>KNN clasificador de clústeres</td>
+                    <td class="mono">95.66%</td>
+                    <td>No reportado</td>
+                    <td>No aplica</td>
+                    <td>No aplica</td>
+                    <td>Reporte PDF</td>
+                  </tr>
+                  <tr>
+                    <td>KNN binario · mediana</td>
+                    <td class="mono">72.74%</td>
+                    <td class="mono">F1 = 0.73</td>
+                    <td>No aplica</td>
+                    <td>No aplica</td>
+                    <td>Reporte PDF</td>
+                  </tr>
+                  <tr>
+                    <td>KNN binario · mediana</td>
+                    <td class="mono">0.7276</td>
+                    <td class="mono">F1 global = 0.73</td>
+                    <td>No aplica</td>
+                    <td>No aplica</td>
+                    <td>K_Means_&_KNN.ipynb</td>
+                  </tr>
+                  <tr>
+                    <td>KNN por terciles</td>
+                    <td class="mono">55.66%</td>
+                    <td>Recall bajo = 68%; precisión alto = 60%</td>
+                    <td>No aplica</td>
+                    <td>No aplica</td>
+                    <td>Reporte PDF</td>
+                  </tr>
+                  <tr>
+                    <td>KNN por terciles</td>
+                    <td class="mono">0.5565</td>
+                    <td class="mono">F1 por clase: 0.62, 0.64, 0.38</td>
+                    <td>No aplica</td>
+                    <td>No aplica</td>
+                    <td>K_Means_&_KNN.ipynb</td>
+                  </tr>
+                  <tr>
+                    <td>KNN regresor continuo</td>
+                    <td>No aplica</td>
+                    <td class="mono">R² = 0.3751</td>
+                    <td class="mono">19,618.44</td>
+                    <td class="mono">25,099.48</td>
+                    <td>Reporte PDF</td>
+                  </tr>
+                  <tr>
+                    <td>KNN regresor continuo</td>
+                    <td>No aplica</td>
+                    <td class="mono">R² = 0.3753</td>
+                    <td class="mono">19,615.52</td>
+                    <td class="mono">25,095.49</td>
+                    <td>K_Means_&_KNN.ipynb</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="note p-4 mt-5">
+            <p class="text-sm text-slate-700 leading-6">
+              El reporte PDF y el notebook K_Means_&_KNN.ipynb muestran pequeñas diferencias
+              en las métricas de los modelos binario, por terciles y regresor. Se muestran ambos
+              resultados con su fuente identificada, sin reemplazar ni promediar los valores.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4 mt-6">
+            <div class="rounded-xl border border-slate-200 p-5">
+              <h4 class="font-bold text-slate-800">Clasificador binario · mediana nacional</h4>
+              <p class="text-sm text-slate-600 leading-6 mt-2">
+                Se tomó como umbral la mediana nacional de $51,577.31 MXN. Las clases son
+                Ingreso Bajo (&lt; Mediana) e Ingreso Alto (&gt;= Mediana).
+              </p>
+
+              <div class="mt-4 text-sm">
+                <p class="font-bold text-slate-700 mb-2">Resultados por clase · notebook</p>
+                <div class="table-wrap">
+                  <table>
+                    <thead><tr><th>Clase</th><th>Precision</th><th>Recall</th><th>F1</th><th>Support</th></tr></thead>
+                    <tbody>
+                      <tr><td>Ingreso Alto (&gt;=Mediana)</td><td>0.74</td><td>0.72</td><td>0.73</td><td>8406</td></tr>
+                      <tr><td>Ingreso Bajo (&lt;Mediana)</td><td>0.72</td><td>0.74</td><td>0.73</td><td>8285</td></tr>
+                      <tr><td>Macro avg</td><td>0.73</td><td>0.73</td><td>0.73</td><td>16691</td></tr>
+                      <tr><td>Weighted avg</td><td>0.73</td><td>0.73</td><td>0.73</td><td>16691</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-slate-200 p-5">
+              <h4 class="font-bold text-slate-800">Clasificador multiclase · terciles</h4>
+              <p class="text-sm text-slate-600 leading-6 mt-2">
+                Los puntos de corte reportados son: Bajo ≤ $38,704.90; Medio entre
+                $38,704.91 y $67,486.95; Alto > $67,486.95.
+              </p>
+
+              <div class="mt-4 text-sm">
+                <p class="font-bold text-slate-700 mb-2">Resultados por clase · notebook</p>
+                <div class="table-wrap">
+                  <table>
+                    <thead><tr><th>Clase</th><th>Precision</th><th>Recall</th><th>F1</th><th>Support</th></tr></thead>
+                    <tbody>
+                      <tr><td>Ingreso Alto</td><td>0.60</td><td>0.64</td><td>0.62</td><td>5564</td></tr>
+                      <tr><td>Ingreso Bajo</td><td>0.60</td><td>0.68</td><td>0.64</td><td>5564</td></tr>
+                      <tr><td>Ingreso Medio</td><td>0.43</td><td>0.34</td><td>0.38</td><td>5563</td></tr>
+                      <tr><td>Macro avg</td><td>0.54</td><td>0.56</td><td>0.55</td><td>16691</td></tr>
+                      <tr><td>Weighted avg</td><td>0.54</td><td>0.56</td><td>0.55</td><td>16691</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-slate-200 p-5">
+              <h4 class="font-bold text-slate-800">Clasificador de clústeres</h4>
+              <p class="text-sm text-slate-600 leading-6 mt-2">
+                El reporte documenta una exactitud del 95.66% al entrenar un clasificador KNN
+                para predecir el clúster no supervisado (0, 1 o 2) basándose en atributos
+                sociodemográficos.
+              </p>
+              <p class="text-xs text-slate-500 leading-5 mt-3">
+                La cifra aparece en el reporte PDF. El código adjunto de K_Means_&_KNN.ipynb
+                no contiene un bloque de entrenamiento de este clasificador de clústeres.
+              </p>
+            </div>
+
+            <div class="rounded-xl border border-slate-200 p-5">
+              <h4 class="font-bold text-slate-800">Regresor continuo · ing_cor</h4>
+              <p class="text-sm text-slate-600 leading-6 mt-2">
+                El reporte indica que las variables sociodemográficas explican cerca del
+                37.5% de la variabilidad del ingreso en los hogares mexicanos.
+              </p>
+              <div class="grid grid-cols-3 gap-2 mt-4">
+                <div class="bg-slate-50 rounded-lg p-2">
+                  <p class="text-xs text-slate-500">R² · reporte</p>
+                  <p class="font-extrabold text-slate-800">0.3751</p>
+                </div>
+                <div class="bg-slate-50 rounded-lg p-2">
+                  <p class="text-xs text-slate-500">MAE · reporte</p>
+                  <p class="font-extrabold text-slate-800 text-sm">$19,618.44</p>
+                </div>
+                <div class="bg-slate-50 rounded-lg p-2">
+                  <p class="text-xs text-slate-500">RMSE · reporte</p>
+                  <p class="font-extrabold text-slate-800 text-sm">$25,099.48</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ML.IPYNB RESULTS -->
+        <div class="section-card p-5 md:p-7 mt-5">
+          <h3 class="text-lg font-bold text-slate-800">Resultados adicionales en ml.ipynb</h3>
+
+          <p class="text-sm text-slate-600 leading-6 mt-2">
+            El notebook ml.ipynb contiene una partición por vivienda con GroupShuffleSplit.
+            Se utilizó test_size=0.2 y random_state=42. La partición final registró 66,770
+            filas en train_set y 16,684 en test_set. El notebook comprobó que
+            test_set['folioviv'].isin(train_set["folioviv"].unique()).sum() devolviera 0.
+          </p>
+
+          <div class="table-wrap mt-4">
+            <table>
+              <thead>
+                <tr><th>Estadístico de ing_cor</th><th>train set</th><th>test set</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>count</td><td class="mono">66770.000000</td><td class="mono">16684.000000</td></tr>
+                <tr><td>mean</td><td class="mono">57671.862353</td><td class="mono">57395.429227</td></tr>
+                <tr><td>std</td><td class="mono">31779.341813</td><td class="mono">31538.752254</td></tr>
+                <tr><td>min</td><td class="mono">0.000000</td><td class="mono">0.000000</td></tr>
+                <tr><td>25%</td><td class="mono">32721.942500</td><td class="mono">32848.010000</td></tr>
+                <tr><td>50%</td><td class="mono">51668.135000</td><td class="mono">51232.150000</td></tr>
+                <tr><td>75%</td><td class="mono">77839.410000</td><td class="mono">76714.810000</td></tr>
+                <tr><td>max</td><td class="mono">143136.170000</td><td class="mono">143138.190000</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4 class="font-bold text-slate-800 mt-6 mb-3">Modelos de regresión ejecutados en ml.ipynb</h4>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Modelo</th><th>RMSE</th><th>MAE</th><th>R²</th><th>Datos usados para predecir</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>LinearRegression</td>
+                  <td class="mono">24622.572428</td>
+                  <td class="mono">19207.105997</td>
+                  <td class="mono">0.399679</td>
+                  <td>y_train</td>
+                </tr>
+                <tr>
+                  <td>DecisionTreeRegressor</td>
+                  <td class="mono">346.570572</td>
+                  <td class="mono">5.992013</td>
+                  <td>No reportado</td>
+                  <td>y_train</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="text-xs text-slate-500 leading-5 mt-3">
+            En ambos bloques, el notebook calcula predicciones con train_set: lin_reg.predict(X_train)
+            y tree_reg.predict(X_train). Se muestran las métricas exactamente como aparecen
+            en las salidas de ml.ipynb.
+          </p>
+        </div>
+
+
+      </div>
+    </section>
+
+    <!-- 6. CÓDIGO REPRODUCIBLE -->
+    <section id="codigo" class="max-w-7xl mx-auto px-5 md:px-8 py-12 md:py-16">
+      <p class="eyebrow">06 · Código reproducible</p>
+      <h2 class="section-heading text-2xl md:text-3xl font-extrabold mt-2">
+        Fragmentos de Python
+      </h2>
+      <p class="text-sm text-slate-600 leading-6 mt-3 max-w-4xl">
+        Fragmentos correspondientes a los procedimientos y notebooks adjuntos. Los fragmentos
+        utilizan los nombres de variables, funciones y parámetros consignados en los documentos.
+      </p>
+
+      <div class="section-card mt-6 overflow-hidden">
+        <div class="code-tabs px-3 pt-3" role="tablist" aria-label="Fragmentos de código">
+          <button class="code-tab active" data-code-tab="clean" role="tab" aria-selected="true">Limpieza y merge</button>
+          <button class="code-tab" data-code-tab="iqr" role="tab" aria-selected="false">Filtro IQR</button>
+          <button class="code-tab" data-code-tab="welch" role="tab" aria-selected="false">Pruebas estadísticas</button>
+          <button class="code-tab" data-code-tab="ml" role="tab" aria-selected="false">K-Means y KNN</button>
+          <button class="code-tab" data-code-tab="split" role="tab" aria-selected="false">ml.ipynb</button>
+        </div>
+
+        <!-- CÓDIGO LIMPIEZA -->
+        <div class="code-panel active" id="code-clean">
+          <div class="flex items-center justify-between gap-3 px-4 py-3 bg-slate-800">
+            <div>
+              <p class="text-xs font-bold text-white">Integración por id_per</p>
+              <p class="text-xs text-slate-400">Reporte · Programa de limpieza</p>
+            </div>
+            <button class="copy-button rounded-lg px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold" data-copy="clean">
+              Copiar código
+            </button>
+          </div>
+          <div class="code-window">
+<pre><code id="source-clean"># Limpieza y merge de tablas de datos de enigh
+# Importar librerias
+import pandas as pd
+import numpy as np
+
+# establecer columnas de datos
+pob_cols = ['folioviv','foliohog','numren','sexo','edad','disc_ver','disc_oir','disc_brazo','disc_camin','disc_apren','disc_vest','disc_habla','disc_acti','nivelaprob']
+ing_cols = ['folioviv','foliohog','numren','clave', 'ing_tri', 'entidad']
+trab_cols = ['folioviv','foliohog', 'numren','id_trabajo','trapais', 'htrab', 'sinco', 'clas_emp', 'tipoact']
+
+# establecer tipos de datos
+tipo_pob = {
+   'folioviv' : str,'foliohog' : str ,'numren' : str ,'sexo' : str,'edad' : float,'disc_ver': str,'disc_oir' : str,'disc_brazo':str,'disc_camin':str,'disc_apren':str,'disc_vest':str,'disc_habla':str,'disc_acti':str,'nivelaprob':str
+}
+tipo_ing = {
+   'folioviv':str,'foliohog':str,'numren':str,'clave':str, 'ing_tri':float, 'entidad':str
+}
+tipo_trab = {
+   'folioviv':str,'foliohog':str, 'numren':str,'htrab':int, 'clas_emp': str,'tipoact':str
+}
+
+# Crear identificador unico por persona
+poblacion['id_per'] = poblacion['folioviv'] + poblacion['foliohog'] + poblacion['numren']
+ingreso['id_per'] = ingreso['folioviv'] + ingreso['foliohog'] + ingreso['numren']
+trabajos['id_per'] = trabajos['folioviv'] + trabajos['foliohog'] + trabajos['numren']
+
+# Verificar si 'id_per' es unico en cada tabla
+print("¿Unico en personas?:", poblacion["id_per"].is_unique)
+print("¿Unico en ingresos?:", ingreso["id_per"].is_unique)
+print("¿Unico en trabajos?:", trabajos["id_per"].is_unique)
+
+# 1. Agrupar y agregar la tabla de ingresos
+ingreso_agrupado = ingreso.groupby('id_per').agg(
+   ing_tri_total=('ing_tri', 'sum'), # Suma de todos los ingresos
+   num_ingresos=('clave', 'count')     # Conteo de fuentes de ingreso
+).reset_index()
+
+# 2. Agrupar y agregar la tabla de trabajos
+trabajos_agrupado = trabajos.groupby('id_per').agg(
+   htrab_total=('htrab', 'sum'),    # Suma de horas trabajadas totales
+   num_trabajos=('id_trabajo', 'count') # Conteo de trabajos
+).reset_index()
+
+# 3. Unir las bases (Merge left para conservar a toda la poblacion)
+df_final = poblacion.merge(ingreso_agrupado, on='id_per', how='left')
+df_final = df_final.merge(trabajos_agrupado, on='id_per', how='left')
+
+# 4. Rellenar nulos con 0 para personas sin trabajo/ingreso
+cols_a_rellenar = ['ing_tri_total', 'num_ingresos', 'htrab_total', 'num_trabajos']
+df_final[cols_a_rellenar] = df_final[cols_a_rellenar].fillna(0)
+
+# Convertir discapacidad en valores 0 y 1 (False True)
+cols_disc = ['disc_ver', 'disc_oir', 'disc_brazo', 'disc_camin',
+         'disc_apren', 'disc_vest', 'disc_habla', 'disc_acti']
+for col in cols_disc:
+   df_final[col] = df_final[col].apply(lambda x: 0 if str(x).strip() == '1' else 1)
+
+# Variables dummie para sexo
+df_final['sexo'] = df_final['sexo'].replace({'1': 'H', '2': 'F'})
+df_final = pd.get_dummies(df_final, columns=['sexo'], drop_first=True, dtype=int)
+
+# Eliminar personas menores de 12 años
+df_final = df_final[df_final['edad'] >= 12].copy()
+print("=== Tamaño final ===", df_final.shape)</code></pre>
+          </div>
+        </div>
+
+        <!-- CÓDIGO IQR -->
+        <div class="code-panel" id="code-iqr">
+          <div class="flex items-center justify-between gap-3 px-4 py-3 bg-slate-800">
+            <div>
+              <p class="text-xs font-bold text-white">Depuración de valores atípicos</p>
+              <p class="text-xs text-slate-400">EDA_Hog.ipynb · Celda de eliminación de outliers</p>
+            </div>
+            <button class="copy-button rounded-lg px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold" data-copy="iqr">
+              Copiar código
+            </button>
+          </div>
+          <div class="code-window">
+<pre><code id="source-iqr"># Eliminacion de outliers
+#cuartiles
+q1 = hogares_eda['ing_cor'].quantile(0.25)
+q3 = hogares_eda['ing_cor'].quantile(0.75)
+# limites
+lim_inf = q1 - (1.5 + (q3 - q1))
+lim_sup = q3 + (1.5 + (q3 - q1))
+
+print(f'limite superior:{lim_sup}')
+print(f'limite inferior:{lim_inf}')
+
+""" eliminar outliers, solo por encima del limite superior,
+ya que en el dataset no hay valores negativos """
+
+hogares_eda = hogares_eda[hogares_eda['ing_cor'] &lt; lim_sup]</code></pre>
+          </div>
+        </div>
+
+        <!-- CÓDIGO ESTADÍSTICAS -->
+        <div class="code-panel" id="code-welch">
+          <div class="flex items-center justify-between gap-3 px-4 py-3 bg-slate-800">
+            <div>
+              <p class="text-xs font-bold text-white">Lilliefors, Fisher y Welch</p>
+              <p class="text-xs text-slate-400">Medias.ipynb</p>
+            </div>
+            <button class="copy-button rounded-lg px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold" data-copy="welch">
+              Copiar código
+            </button>
+          </div>
+          <div class="code-window">
+<pre><code id="source-welch"># Importar las librerias necesarias
+import pandas as pd
+import numpy as np
+import scipy.stats as stats
+import seaborn as sns
+import matplotlib.pyplot as plt
+from statsmodels.stats.diagnostic import lilliefors
+
+# Prueba para datos de hogares con jefes hombres
+statistic, p_value = lilliefors(datos_h['ing_cor'], dist='norm')
+
+print(f"Estadístico K-S: {statistic:.4f}")
+print(f"P-valor: {p_value:.4f}")
+
+# Interpretación:
+if p_value >= 0.05:
+    print("No se rechaza H0: Los datos siguen una distribución normal (p >= 0.05).")
+else:
+    print("Se rechaza H0: Los datos NO siguen una distribución normal (p &lt; 0.05).")
+
+# Prueba para datos de hogares con jefas mujeres
+statistic, p_value = lilliefors(datos_m['ing_cor'], dist='norm')
+
+print(f"Estadístico K-S: {statistic:.4f}")
+print(f"P-valor: {p_value:.4f}")
+
+# Interpretación:
+if p_value >= 0.05:
+    print("No se rechaza H0: Los datos siguen una distribución normal (p >= 0.05).")
+else:
+    print("Se rechaza H0: Los datos NO siguen una distribución normal (p &lt; 0.05).")
+
+# Establecer grados de libertad.
+gl_h = len(datos_h['ing_cor']) -1
+gl_m = len(datos_m['ing_cor']) -1
+
+# Obtencion de varianzas
+var_h = np.var(datos_h['ing_cor'], ddof=1)
+var_m = np.var(datos_m['ing_cor'], ddof=1)
+
+print(f"grados de libertad hombres: {gl_h}")
+print(f"grados de libertad mujeres: {gl_m}")
+
+print(f"varianza hombres: {var_h}")
+print(f"varianza mujeres: {var_m}")
+
+# calculo de prueba f
+if var_m >= var_h:
+    Fprueba = var_m/var_h
+    print('varianza superior mujeres')
+else:
+    Fprueba = var_h/var_m
+    print('varianza superior hombres')
+
+print(f'Valor de prueba:{Fprueba}')
+
+# Valores criticos
+alpha = 0.05
+
+F_inf = stats.f.ppf(alpha/2, gl_h, gl_m)
+F_sup = stats.f.ppf(1-alpha/2, gl_h, gl_m)
+
+print(f'Limite superior: {F_sup}')
+print(f'Limite inferior: {F_inf}')
+
+# Prueba e interpretacion
+if Fprueba >= F_sup or Fprueba &lt;= F_inf:
+    print('Existe evidencia estadistica para rechazar H0 y asumir que las varianzas son distintas')
+else:
+    print('Existe evidencia estadistica para aceptar H0 y asumir que las varianzas son similares')
+
+# P valor
+p_valor = 2 * stats.f.sf(Fprueba, gl_h, gl_m)
+
+print(f'P-valor: {p_valor:.6f}')
+if p_valor &lt; 0.05:
+    print('P valor es menor que la significancia, por lo que se rechaza H0, las muestras son significativamente diferentes')
+else:
+    print('P valor es mayor que la significancia, por lo que se acepta Ho, las varianzas son similares')
+
+# Prueba t de Welch con SciPy (equal_var=False)
+resultado = stats.ttest_ind(datos_h['ing_cor'], datos_m['ing_cor'], equal_var=False)
+
+alpha = 0.05
+t_sup = stats.t.ppf(1 - alpha / 2, resultado.df)
+t_inf = stats.t.ppf(alpha / 2, resultado.df)
+
+print(f"Estadístico t: {resultado.statistic:.4f}")
+print(f"Grados de libertad (Welch): {resultado.df:,.2f}")
+print(f"P-valor: {resultado.pvalue:.4e}")
+print(f"Límites críticos: [{t_inf:.4f}, {t_sup:.4f}]\\n")
+
+# Interpretación
+if resultado.pvalue &lt; alpha:
+    print("Se rechaza H0 (p &lt; 0.05): Existe una diferencia estadísticamente significativa entre los ingresos promedio de hombres y mujeres.")
+else:
+    print("No se rechaza H0 (p >= 0.05): No hay evidencia suficiente para afirmar que los ingresos promedio sean distintos.")
+
+print(f'Media de ingresos en hogares con jefe Hombre: {datos_h['ing_cor'].mean()}')
+print(f'Media de ingresos en hogares con jefa Mujer: {datos_m['ing_cor'].mean()}')
+print(f'Diferencia de ingresos: {datos_h['ing_cor'].mean() - datos_m['ing_cor'].mean()}')</code></pre>
+          </div>
+        </div>
+
+        <!-- CÓDIGO K MEANS -->
+        <div class="code-panel" id="code-ml">
+          <div class="flex items-center justify-between gap-3 px-4 py-3 bg-slate-800">
+            <div>
+              <p class="text-xs font-bold text-white">K-Means y KNN</p>
+              <p class="text-xs text-slate-400">K_Means_&_KNN.ipynb · Celda completa</p>
+            </div>
+            <button class="copy-button rounded-lg px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold" data-copy="ml">
+              Copiar código
+            </button>
+          </div>
+          <div class="code-window">
+<pre><code id="source-ml">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import (silhouette_score, classification_report, confusion_matrix,
+                             accuracy_score, r2_score, mean_absolute_error, root_mean_squared_error)
+
+# ==============================================================================
+# 1. CARGA DE DATOS Y CODIFICACIÓN DUMMY (ONE-HOT ENCODING)
+# ==============================================================================
+df = pd.read_csv('df_ml (1).csv')
+
+# Variables categóricas indicadas e identificadores a descartar
+cat_cols = ['tam_loc', 'est_socio', 'clase_hog', 'sexo_jefe', 'educa_jefe']
+id_cols = ['folioviv', 'foliohog', 'ubica_geo']
+
+# Aplicar get_dummies (drop_first=True evita multicolinealidad perfecta)
+df_ml = pd.get_dummies(df.drop(columns=id_cols), columns=cat_cols, drop_first=True, dtype=int)
+print(f"Dimensiones tras crear dummies: {df_ml.shape}")
+
+# ==============================================================================
+# 2. MODELO NO SUPERVISADO: K-MEANS
+# ==============================================================================
+scaler_km = StandardScaler()
+X_kmeans = scaler_km.fit_transform(df_ml)
+
+# Método del codo para k de 2 a 7
+inertias = []
+K_range = range(2, 8)
+for k in K_range:
+    km_temp = KMeans(n_clusters=k, random_state=42, n_init=10)
+    km_temp.fit(X_kmeans)
+    inertias.append(km_temp.inertia_)
+
+# Entrenamiento del modelo óptimo con k = 3
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+df['cluster_kmeans'] = kmeans.fit_predict(X_kmeans)
+
+print("\\n=== PERFIL PROMEDIO POR CLÚSTER (K-MEANS, K=3) ===")
+resumen_clusters = df.groupby('cluster_kmeans')[
+    ['ing_cor', 'edad_jefe', 'tot_integ', 'ocupados', 'percep_ing', 'menores', 'p65mas']
+].mean().round(2)
+resumen_clusters['total_hogares'] = df['cluster_kmeans'].value_counts()
+print(resumen_clusters)
+
+# ==============================================================================
+# 3. MODELO SUPERVISADO: K-NEAREST NEIGHBORS (KNN)
+# ==============================================================================
+# Separar matriz predictora (X) y variable objetivo (y = ing_cor)
+X = df_ml.drop(columns=['ing_cor'])
+y_continuo = df_ml['ing_cor']
+
+# Discretización de ing_cor para KNN Clasificador:
+# A) Binaria (Por debajo vs. Por encima de la mediana: $51,577.31)
+y_binario = np.where(y_continuo >= y_continuo.median(), 'Ingreso Alto (>=Mediana)', 'Ingreso Bajo (&lt;Mediana)')
+
+# B) Multiclase por Terciles (Bajo, Medio, Alto)
+y_terciles = pd.qcut(y_continuo, q=3, labels=['Ingreso Bajo', 'Ingreso Medio', 'Ingreso Alto'])
+
+# División Train / Test (80% entrenamiento, 20% prueba)
+X_train, X_test, y_bin_tr, y_bin_te, y_ter_tr, y_ter_te, y_reg_tr, y_reg_te = train_test_split(
+    X, y_binario, y_terciles, y_continuo, test_size=0.20, random_state=42, stratify=y_terciles
+)
+
+# Estandarización ajustada únicamente con el conjunto de entrenamiento (evita Data Leakage)
+scaler_knn = StandardScaler()
+X_train_scaled = scaler_knn.fit_transform(X_train)
+X_test_scaled = scaler_knn.transform(X_test)
+
+# --- 3.1 KNN Clasificador Binario (2 Clases) ---
+knn_bin = KNeighborsClassifier(n_neighbors=31, weights='uniform', n_jobs=-1)
+knn_bin.fit(X_train_scaled, y_bin_tr)
+y_bin_pred = knn_bin.predict(X_test_scaled)
+
+print("\\n=== RESULTADOS KNN CLASIFICADOR BINARIO (MEDIANA DE ING_COR) ===")
+print(f"Accuracy: {accuracy_score(y_bin_te, y_bin_pred):.4f}")
+print(classification_report(y_bin_te, y_bin_pred))
+
+# --- 3.2 KNN Clasificador Multiclase (3 Terciles de Ingreso) ---
+knn_ter = KNeighborsClassifier(n_neighbors=31, weights='uniform', n_jobs=-1)
+knn_ter.fit(X_train_scaled, y_ter_tr)
+y_ter_pred = knn_ter.predict(X_test_scaled)
+
+print("\\n=== RESULTADOS KNN CLASIFICADOR MULTICLASE (TERCILES DE ING_COR) ===")
+print(f"Accuracy: {accuracy_score(y_ter_te, y_ter_pred):.4f}")
+print(classification_report(y_ter_te, y_ter_pred))
+
+# --- 3.3 KNN Regresor (Predicción directa de ing_cor continuo) ---
+knn_reg = KNeighborsRegressor(n_neighbors=31, weights='uniform', n_jobs=-1)
+knn_reg.fit(X_train_scaled, y_reg_tr)
+y_reg_pred = knn_reg.predict(X_test_scaled)
+
+print("\\n=== RESULTADOS KNN REGRESOR (ING_COR CONTINUO) ===")
+print(f"R² Score: {r2_score(y_reg_te, y_reg_pred):.4f}")
+print(f"MAE:      ${mean_absolute_error(y_reg_te, y_reg_pred):,.2f} MXN")
+print(f"RMSE:     ${root_mean_squared_error(y_reg_te, y_reg_pred):,.2f} MXN")</code></pre>
+          </div>
+        </div>
+
+        <!-- CÓDIGO MLIPYNB -->
+        <div class="code-panel" id="code-split">
+          <div class="flex items-center justify-between gap-3 px-4 py-3 bg-slate-800">
+            <div>
+              <p class="text-xs font-bold text-white">Partición por vivienda y LinearRegression</p>
+              <p class="text-xs text-slate-400">ml.ipynb</p>
+            </div>
+            <button class="copy-button rounded-lg px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold" data-copy="split">
+              Copiar código
+            </button>
+          </div>
+          <div class="code-window">
+<pre><code id="source-split">from sklearn.model_selection import GroupShuffleSplit
+from sklearn.pipeline import Pipeline, make_pipeline
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer, make_column_selector
+from sklearn.impute import SimpleImputer
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import root_mean_squared_error, mean_absolute_error, r2_score
+
+# Crear un train-test split
+splitter = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
+train_idx, test_idx = next(splitter.split(df, groups=df['folioviv']))
+train_set, test_set = df.iloc[train_idx], df.iloc[test_idx]
+
+# Comprobamos que no comparten vivienda
+test_set['folioviv'].isin(train_set["folioviv"].unique()).sum()
+
+# Buscamos alguna correlacion importante entre las variables independientes y la dependiente
+corr_matrix = train_set.corr(numeric_only=True)
+corr_matrix["ing_cor"].sort_values(ascending=False)
+
+# Preparar los datos para los algoritmos de ML
+X_train = train_set.drop("ing_cor", axis=1)
+y_train = train_set["ing_cor"].copy()
+X_test = test_set.drop("ing_cor", axis=1)
+y_test = test_set["ing_cor"].copy()
+
+num_pipeline = Pipeline([
+    ('imputer', SimpleImputer(strategy="median")),
+    ('std_scaler', StandardScaler())
+])
+
+cat_pipeline = Pipeline([
+    ('imputer_cat', SimpleImputer(strategy="most_frequent")),
+    ('onehot', OneHotEncoder(handle_unknown='ignore'))
+])
+
+preprocessor = ColumnTransformer([
+    ("num", num_pipeline, make_column_selector(dtype_include=['int64', 'float64'])),
+    ("cat", cat_pipeline, make_column_selector(dtype_include=['object'])),
+    ("drop", "drop", ['folioviv', 'foliohog','ubica_geo'])
+])
+
+lin_reg = make_pipeline(preprocessor, LinearRegression())
+lin_reg.fit(X_train, y_train)
+
+lin_pred = lin_reg.predict(X_train)
+
+lin_rmse = root_mean_squared_error(y_train, lin_pred)
+lin_mae = mean_absolute_error(y_train, lin_pred)
+lin_r2 = r2_score(y_train, lin_pred)
+
+scores = pd.DataFrame({
+    "RMSE": [lin_rmse],
+    "MAE": [lin_mae],
+    "R2": [lin_r2]
+    })
+
+scores.head()
+
+tree_reg = make_pipeline(preprocessor, DecisionTreeRegressor(random_state=42))
+
+tree_reg.fit(X_train, y_train)
+
+tree_pred = tree_reg.predict(X_train)
+
+tree_rmse = root_mean_squared_error(y_train, tree_pred)
+tree_mae = mean_absolute_error(y_train, tree_pred)
+
+scores_tree = pd.DataFrame({
+    "RMSE": [tree_rmse],
+    "MAE": [tree_mae]
+    })
+
+scores_tree.head()</code></pre>
+          </div>
+        </div>
+
+        <div class="px-4 py-3 bg-slate-800">
+          <p id="copyStatus" class="copy-status" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <div class="note p-4 mt-5">
+        <p class="text-sm text-slate-700 leading-6">
+          En el código de K_Means_&_KNN.ipynb, X_kmeans se construye con
+          scaler_km.fit_transform(df_ml). df_ml se crea con pd.get_dummies a partir de
+          df.drop(columns=id_cols), por lo que conserva ing_cor. El reporte describe K-Means
+          como ejecutado sin intervención de la variable objetivo. Ambos contenidos se muestran
+          sin modificar el código ni sustituir la descripción del reporte.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 text-slate-300">
+    <div class="max-w-7xl mx-auto px-5 md:px-8 py-10">
+      <div class="grid md:grid-cols-2 gap-8">
+        <div>
+          <p class="text-white font-extrabold text-lg">Universidad de Guadalajara</p>
+          <p class="text-sm mt-1">Centro Universitario de Guadalajara · CUGDL</p>
+          <p class="text-sm mt-1">Licenciatura en Inteligencia Artificial y Ciencia de los Datos</p>
+          <p class="text-sm mt-1">Turno Vespertino</p>
+        </div>
+
+        <div>
+          <p class="text-white font-bold">Proyecto tercer semestre</p>
+          <p class="text-sm mt-2">Encuesta Nacional de Ingresos y Gastos de los Hogares 2024</p>
+          <p class="text-sm mt-1">Nueva Serie · INEGI</p>
+          <p class="text-xs text-slate-500 mt-3">
+            Integrantes: Diego Alejando Solis Guadarrama, Oswaldo Ramirez Alvarez,
+            Jorge Iván Gutiérrez Amezcua.
+          </p>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800 mt-8 pt-5 flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
+        <p class="text-xs text-slate-500">
+          Proyecto académico basado en el reporte y notebooks adjuntos.
+        </p>
+        <a href="#inicio" class="text-xs text-blue-200 hover:text-white">Volver al inicio ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT: GRÁFICAS E INTERACTIVIDAD -->
+  <script>
+    // Configuración general de Chart.js
+    Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
+    Chart.defaults.font.size = 11;
+    Chart.defaults.color = '#64748b';
+    Chart.defaults.plugins.legend.labels.usePointStyle = true;
+
+    const chartColors = {
+      navy: '#142d4e',
+      blue: '#2865a0',
+      cyan: '#4d91b5',
+      gold: '#bd963e',
+      lightBlue: '#91b9d2',
+      slate: '#7b8fa5'
+    };
+
+    // Pearson: train_set.corr(numeric_only=True), ml.ipynb
+    new Chart(document.getElementById('pearsonChart'), {
+      type: 'bar',
+      data: {
+        labels: [
+          'perc_ocupa',
+          'percep_ing',
+          'ocupados',
+          'mayores',
+          'p12_64',
+          'tot_integ',
+          'hombres',
+          'mujeres',
+          'menores',
+          'p65mas',
+          'edad_jefe',
+        ],
+        datasets: [{
+          label: 'Correlación Pearson con ing_cor',
+          data: [
+            0.375766,
+            0.363766,
+            0.345224,
+            0.329767,
+            0.319289,
+            0.268383,
+            0.228660,
+            0.187071,
+            0.033076,
+            -0.047446,
+            -0.059550,
+          ],
+          backgroundColor: chartColors.blue,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: context => context.raw.toFixed(6)
+            }
+          }
+        },
+        scales: {
+          x: {
+            min: -0.15,
+            max: 0.45,
+            title: {
+              display: true,
+              text: 'Coeficiente Pearson'
+            },
+            grid: { color: '#edf1f5' }
+          },
+          y: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // Distribución de hogares por clase_hog, EDA_Hog.ipynb
+    new Chart(document.getElementById('houseTypeChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Nuclear', 'Ampliado', 'Unipersonal', 'Compuesto', 'Corresidente'],
+        datasets: [{
+          label: 'Cantidad de hogares',
+          data: [51443, 19143, 12151, 469, 248],
+          backgroundColor: [
+            chartColors.navy,
+            chartColors.blue,
+            chartColors.cyan,
+            chartColors.lightBlue,
+            chartColors.gold
+          ],
+          borderRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Cantidad de hogares' },
+            grid: { color: '#edf1f5' }
+          },
+          x: {
+            ticks: { maxRotation: 25, minRotation: 0 },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // Distribución por tam_loc, EDA_Hog.ipynb
+    new Chart(document.getElementById('localityChart'), {
+      type: 'bar',
+      data: {
+        labels: [
+          'Menos de 2,500 hab',
+          'Mas de 100,000 hab',
+          'De 2,500 a 14,999 hab',
+          'De 15,000 a 99,999 hab'
+        ],
+        datasets: [{
+          label: 'Cantidad de hogares',
+          data: [34551, 29063, 10239, 9601],
+          backgroundColor: [
+            chartColors.navy,
+            chartColors.blue,
+            chartColors.cyan,
+            chartColors.gold
+          ],
+          borderRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Cantidad de hogares' },
+            grid: { color: '#edf1f5' }
+          },
+          x: {
+            ticks: { maxRotation: 30, minRotation: 0 },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+
+    // Medias y medianas por sexo_jefe, Medias.ipynb
+    new Chart(document.getElementById('genderChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Hombre', 'Mujer'],
+        datasets: [
+          {
+            label: 'Media · MXN trimestrales',
+            data: [58769.150825, 55265.777218],
+            backgroundColor: chartColors.blue,
+            borderRadius: 5
+          },
+          {
+            label: 'Mediana · MXN trimestrales',
+            data: [52826.08, 48958.48],
+            backgroundColor: chartColors.gold,
+            borderRadius: 5
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: context => context.dataset.label + ': $' +
+                context.raw.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 6 })
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Ingreso trimestral (MXN)' },
+            grid: { color: '#edf1f5' }
+          },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // Ingresos promedio por clúster
+    new Chart(document.getElementById('clusterIncomeChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Clúster 0', 'Clúster 1', 'Clúster 2'],
+        datasets: [{
+          label: 'Ingreso corriente promedio trimestral (MXN)',
+          data: [75035.57, 57058.12, 43845.47],
+          backgroundColor: [chartColors.blue, chartColors.cyan, chartColors.gold],
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: context => '$' + context.raw.toLocaleString('es-MX', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              })
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'MXN trimestrales' },
+            grid: { color: '#edf1f5' }
+          },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // Comparativa de accuracy reportado y notebook.
+    new Chart(document.getElementById('knnAccuracyChart'), {
+      type: 'bar',
+      data: {
+        labels: [
+          'KNN clústeres · reporte',
+          'KNN binario · reporte',
+          'KNN binario · notebook',
+          'KNN terciles · reporte',
+          'KNN terciles · notebook'
+        ],
+        datasets: [{
+          label: 'Accuracy',
+          data: [0.9566, 0.7274, 0.7276, 0.5566, 0.5565],
+          backgroundColor: [
+            chartColors.navy,
+            chartColors.blue,
+            chartColors.lightBlue,
+            chartColors.cyan,
+            chartColors.gold
+          ],
+          borderRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: context => (context.raw * 100).toFixed(2) + '%'
+            }
+          }
+        },
+        scales: {
+          x: {
+            min: 0,
+            max: 1,
+            ticks: {
+              callback: value => (value * 100).toFixed(0) + '%'
+            },
+            title: { display: true, text: 'Accuracy' },
+            grid: { color: '#edf1f5' }
+          },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+
+    // Pestañas de código
+    const codeTabs = document.querySelectorAll('[data-code-tab]');
+    const codePanels = document.querySelectorAll('.code-panel');
+
+    codeTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.getAttribute('data-code-tab');
+
+        codeTabs.forEach(item => {
+          item.classList.remove('active');
+          item.setAttribute('aria-selected', 'false');
+        });
+
+        codePanels.forEach(panel => panel.classList.remove('active'));
+
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+
+        const selectedPanel = document.getElementById('code-' + target);
+        if (selectedPanel) {
+          selectedPanel.classList.add('active');
+        }
+      });
+    });
+
+    // Copiar código
+    const statusElement = document.getElementById('copyStatus');
+
+    document.querySelectorAll('[data-copy]').forEach(button => {
+      button.addEventListener('click', async () => {
+        const key = button.getAttribute('data-copy');
+        const source = document.getElementById('source-' + key);
+
+        if (!source) return;
+
+        const codeText = source.textContent;
+
+        try {
+          await navigator.clipboard.writeText(codeText);
+          statusElement.textContent = 'Código copiado al portapapeles.';
+        } catch (error) {
+          const textarea = document.createElement('textarea');
+          textarea.value = codeText;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+
+          try {
+            document.execCommand('copy');
+            statusElement.textContent = 'Código copiado al portapapeles.';
+          } catch (fallbackError) {
+            statusElement.textContent = 'No fue posible copiar automáticamente. Selecciona el código para copiarlo.';
+          }
+
+          document.body.removeChild(textarea);
+        }
+
+        window.setTimeout(() => {
+          statusElement.textContent = '';
+        }, 3500);
+      });
+    });
+  </script>
+</body>
+</html>
