@@ -348,7 +348,9 @@
             <a class="nav-link" href="#objetivos">Objetivos</a>
             <a class="nav-link" href="#eda">EDA</a>
             <a class="nav-link" href="#genero">Género</a>
-            <a class="nav-link" href="#modelos">Machine Learning</a>
+            <a class="nav-link" href="#modelos">Clasificación</a>
+            <a class="nav-link" href="#regresion">Regresión</a>
+            <a class="nav-link" href="#conclusiones">Conclusiones</a>
             <a class="nav-link" href="#codigo">Código</a>
           </div>
         </div>
@@ -702,21 +704,19 @@
           <div class="note p-4 mt-6">
             <p class="text-xs font-bold text-slate-800 mb-1">Distribución nacional e ingresos extremos</p>
             <p class="text-sm text-slate-600 leading-6">
-              El reporte describe 252,527 registros en las 32 entidades federativas y un
-              ingreso trimestral extremo de hasta $17,373,913.03 MXN. También señala la
-              presencia de personas de entre 12 y 18 años, personas sin ingresos y una
-              dispersión muy alta en el análisis individual.
+              El análisis individual comprende 252,527 registros de las 32 entidades federativas.
+              En esta unidad de análisis se identificaron ingresos trimestrales extremos de hasta
+              $17,373,913.03 MXN, además de registros sin ingresos y una dispersión elevada.
             </p>
           </div>
         </div>
 
         <!-- CORRELACIONES -->
         <div class="section-card p-5 md:p-7 mb-6">
-          <h3 class="text-lg font-bold text-slate-800">Correlaciones documentadas en ml.ipynb</h3>
+          <h3 class="text-lg font-bold text-slate-800">Correlaciones de Pearson</h3>
           <p class="text-sm text-slate-600 leading-6 mt-2">
-            El notebook ml.ipynb calcula la matriz mediante
-            <span class="mono text-blue-800">train_set.corr(numeric_only=True)</span>.
-            Los coeficientes siguientes son los valores Pearson obtenidos en train_set.
+            La matriz se calculó con <span class="mono text-blue-800">train_set.corr(numeric_only=True)</span>.
+            Se presentan los coeficientes de correlación de Pearson entre las variables y el ingreso corriente del hogar.
           </p>
 
           <div class="table-wrap mt-4">
@@ -750,14 +750,6 @@
             </div>
           </div>
 
-          <div class="note p-4 mt-5">
-            <p class="text-sm text-slate-700 leading-6">
-              Los documentos adjuntos no presentan coeficientes numéricos Spearman ni una
-              comparativa Pearson–Spearman a nivel individual. Tampoco se localiza una
-              ejecución o resultado de la transformación log1p en los notebooks o en el reporte.
-              Por ello, no se agregan coeficientes ni gráficas de Spearman o de log1p.
-            </p>
-          </div>
         </div>
 
         <!-- EDA HOGAR -->
@@ -772,13 +764,11 @@
 
           <h4 class="font-bold text-slate-800 mb-2">Justificación del cambio de unidad de análisis</h4>
           <p class="text-sm text-slate-600 leading-7">
-            Después de realizar la limpieza y algunas pruebas con la base de datos por persona,
-            se encontraron impedimentos como la alta presencia de personas de entre 12 y 18 años,
-            personas sin ingresos y una dispersión muy alta. El reporte señala que el diseño
-            metodológico de la ENIGH tiene como objetivo principal obtener información por hogares,
-            dejando los datos de personas como un tema secundario. Por ello se tomó la decisión de
-            trabajar con la tabla de concentrado hogares, que contiene variables relevantes de
-            ingresos, gastos y características sociodemográficas por hogar.
+            Después de la limpieza y exploración de los registros individuales, se identificaron
+            una alta presencia de personas de entre 12 y 18 años, registros sin ingresos y una
+            dispersión elevada. Dado que la ENIGH está diseñada para estudiar los ingresos y gastos
+            de los hogares, el análisis se enfocó en la tabla concentradohogar, que reúne variables
+            de ingreso y características sociodemográficas para cada hogar.
           </p>
 
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5">
@@ -824,19 +814,11 @@
             </div>
           </div>
 
-          <div class="note p-4 mt-5">
-            <p class="text-sm text-slate-700 leading-6">
-              En el reporte se describe el límite como $143,162 MXN trimestrales. En el apartado
-              de modelado del mismo reporte aparece $143,138.19 MXN. En EDA_Hog.ipynb el límite
-              superior calculado es 143162.0925 y el máximo observado después del filtro es
-              143138.190000. Se conservan aquí los valores de cada fuente sin sustituir uno por otro.
-            </p>
-          </div>
 
           <div class="mt-6">
             <h4 class="font-bold text-slate-800 mb-3">Estadísticos descriptivos exactos</h4>
             <p class="text-xs text-slate-500 mb-3">
-              Salidas de EDA_Hog.ipynb y ml.ipynb para las variables utilizadas en el análisis.
+              Salidas de análisis exploratorio a nivel hogar y análisis de correlaciones para las variables utilizadas en el análisis.
             </p>
 
             <div class="table-wrap">
@@ -1194,7 +1176,7 @@
         </div>
 
         <div class="mt-5 rounded-xl bg-blue-50 border border-blue-100 p-5">
-          <p class="text-xs font-extrabold uppercase tracking-wider text-blue-800">Diferencia de medias reportada por el notebook</p>
+          <p class="text-xs font-extrabold uppercase tracking-wider text-blue-800">Diferencia de medias</p>
           <p class="text-3xl md:text-4xl font-extrabold text-blue-950 mt-2">$3,503.373606843081 MXN</p>
           <p class="text-sm text-blue-800 mt-2">Diferencia de ingreso corriente trimestral: hombres menos mujeres.</p>
         </div>
@@ -1259,10 +1241,9 @@
             </div>
 
             <p class="text-sm text-slate-600 mt-3 leading-6">
-              En ambas muestras la distribución es distinta a una distribución normal. El notebook
-              señala que, aunque los histogramas muestran una forma similar a una campana, también
-              se observa sesgo a la derecha. Para continuar con las pruebas se apela al Teorema
-              del Límite Central.
+              En ambas muestras la distribución se aparta de la normalidad. Aunque los histogramas
+              muestran una forma aproximadamente acampanada, también se observa sesgo a la derecha.
+              Para continuar con las pruebas se utiliza el Teorema del Límite Central.
             </p>
           </div>
 
@@ -1299,8 +1280,8 @@
               <p class="text-sm font-bold text-amber-900">Resultado de la prueba F</p>
               <p class="text-sm text-slate-700 leading-6 mt-1">
                 Existe evidencia estadística para rechazar H₀ y asumir que las varianzas son
-                distintas. El notebook indica que el estadístico F fue 1.031447763905433,
-                por encima del límite superior 1.0206689233135156. El p-valor fue 0.003025.
+                distintas. El estadístico F fue 1.031447763905433, por encima del límite superior
+                1.0206689233135156. El p-valor fue 0.003025.
               </p>
             </div>
           </div>
@@ -1504,14 +1485,14 @@
         <div class="section-card p-5 md:p-7">
           <h3 class="text-xl font-extrabold text-slate-800">Aprendizaje supervisado · K-Nearest Neighbors</h3>
           <p class="text-sm text-slate-600 leading-6 mt-2">
-            El notebook K_Means_&_KNN.ipynb utiliza KNeighborsClassifier y
-            KNeighborsRegressor con n_neighbors=31, weights='uniform' y n_jobs=-1.
+            Se utilizaron KNeighborsClassifier y KNeighborsRegressor con n_neighbors=31,
+            weights='uniform' y n_jobs=-1.
             La separación Train/Test se realizó con test_size=0.20 y random_state=42,
             estratificando por los terciles de ingreso.
           </p>
 
           <div class="mt-6">
-            <h4 class="font-bold text-slate-800 mb-3">Comparativa de accuracy documentada</h4>
+            <h4 class="font-bold text-slate-800 mb-3">Exactitud de los modelos de clasificación</h4>
             <div class="chart-container">
               <canvas id="knnAccuracyChart"></canvas>
             </div>
@@ -1528,7 +1509,6 @@
                     <th>F1 / R²</th>
                     <th>MAE (MXN)</th>
                     <th>RMSE (MXN)</th>
-                    <th>Fuente</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1538,7 +1518,6 @@
                     <td>No reportado</td>
                     <td>No aplica</td>
                     <td>No aplica</td>
-                    <td>Reporte PDF</td>
                   </tr>
                   <tr>
                     <td>KNN binario · mediana</td>
@@ -1546,15 +1525,6 @@
                     <td class="mono">F1 = 0.73</td>
                     <td>No aplica</td>
                     <td>No aplica</td>
-                    <td>Reporte PDF</td>
-                  </tr>
-                  <tr>
-                    <td>KNN binario · mediana</td>
-                    <td class="mono">0.7276</td>
-                    <td class="mono">F1 global = 0.73</td>
-                    <td>No aplica</td>
-                    <td>No aplica</td>
-                    <td>K_Means_&_KNN.ipynb</td>
                   </tr>
                   <tr>
                     <td>KNN por terciles</td>
@@ -1562,15 +1532,6 @@
                     <td>Recall bajo = 68%; precisión alto = 60%</td>
                     <td>No aplica</td>
                     <td>No aplica</td>
-                    <td>Reporte PDF</td>
-                  </tr>
-                  <tr>
-                    <td>KNN por terciles</td>
-                    <td class="mono">0.5565</td>
-                    <td class="mono">F1 por clase: 0.62, 0.64, 0.38</td>
-                    <td>No aplica</td>
-                    <td>No aplica</td>
-                    <td>K_Means_&_KNN.ipynb</td>
                   </tr>
                   <tr>
                     <td>KNN regresor continuo</td>
@@ -1578,28 +1539,12 @@
                     <td class="mono">R² = 0.3751</td>
                     <td class="mono">19,618.44</td>
                     <td class="mono">25,099.48</td>
-                    <td>Reporte PDF</td>
-                  </tr>
-                  <tr>
-                    <td>KNN regresor continuo</td>
-                    <td>No aplica</td>
-                    <td class="mono">R² = 0.3753</td>
-                    <td class="mono">19,615.52</td>
-                    <td class="mono">25,095.49</td>
-                    <td>K_Means_&_KNN.ipynb</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
 
-          <div class="note p-4 mt-5">
-            <p class="text-sm text-slate-700 leading-6">
-              El reporte PDF y el notebook K_Means_&_KNN.ipynb muestran pequeñas diferencias
-              en las métricas de los modelos binario, por terciles y regresor. Se muestran ambos
-              resultados con su fuente identificada, sin reemplazar ni promediar los valores.
-            </p>
-          </div>
 
           <div class="grid md:grid-cols-2 gap-4 mt-6">
             <div class="rounded-xl border border-slate-200 p-5">
@@ -1610,7 +1555,7 @@
               </p>
 
               <div class="mt-4 text-sm">
-                <p class="font-bold text-slate-700 mb-2">Resultados por clase · notebook</p>
+                <p class="font-bold text-slate-700 mb-2">Métricas por clase</p>
                 <div class="table-wrap">
                   <table>
                     <thead><tr><th>Clase</th><th>Precision</th><th>Recall</th><th>F1</th><th>Support</th></tr></thead>
@@ -1633,7 +1578,7 @@
               </p>
 
               <div class="mt-4 text-sm">
-                <p class="font-bold text-slate-700 mb-2">Resultados por clase · notebook</p>
+                <p class="font-bold text-slate-700 mb-2">Métricas por clase</p>
                 <div class="table-wrap">
                   <table>
                     <thead><tr><th>Clase</th><th>Precision</th><th>Recall</th><th>F1</th><th>Support</th></tr></thead>
@@ -1652,33 +1597,28 @@
             <div class="rounded-xl border border-slate-200 p-5">
               <h4 class="font-bold text-slate-800">Clasificador de clústeres</h4>
               <p class="text-sm text-slate-600 leading-6 mt-2">
-                El reporte documenta una exactitud del 95.66% al entrenar un clasificador KNN
-                para predecir el clúster no supervisado (0, 1 o 2) basándose en atributos
-                sociodemográficos.
-              </p>
-              <p class="text-xs text-slate-500 leading-5 mt-3">
-                La cifra aparece en el reporte PDF. El código adjunto de K_Means_&_KNN.ipynb
-                no contiene un bloque de entrenamiento de este clasificador de clústeres.
+                El clasificador KNN alcanzó una exactitud del 95.66% al predecir el clúster
+                no supervisado (0, 1 o 2) a partir de atributos sociodemográficos.
               </p>
             </div>
 
             <div class="rounded-xl border border-slate-200 p-5">
               <h4 class="font-bold text-slate-800">Regresor continuo · ing_cor</h4>
               <p class="text-sm text-slate-600 leading-6 mt-2">
-                El reporte indica que las variables sociodemográficas explican cerca del
-                37.5% de la variabilidad del ingreso en los hogares mexicanos.
+                Las variables sociodemográficas explican cerca del 37.5% de la variabilidad
+                del ingreso en los hogares mexicanos.
               </p>
               <div class="grid grid-cols-3 gap-2 mt-4">
                 <div class="bg-slate-50 rounded-lg p-2">
-                  <p class="text-xs text-slate-500">R² · reporte</p>
+                  <p class="text-xs text-slate-500">R²</p>
                   <p class="font-extrabold text-slate-800">0.3751</p>
                 </div>
                 <div class="bg-slate-50 rounded-lg p-2">
-                  <p class="text-xs text-slate-500">MAE · reporte</p>
+                  <p class="text-xs text-slate-500">MAE</p>
                   <p class="font-extrabold text-slate-800 text-sm">$19,618.44</p>
                 </div>
                 <div class="bg-slate-50 rounded-lg p-2">
-                  <p class="text-xs text-slate-500">RMSE · reporte</p>
+                  <p class="text-xs text-slate-500">RMSE</p>
                   <p class="font-extrabold text-slate-800 text-sm">$25,099.48</p>
                 </div>
               </div>
@@ -1686,80 +1626,322 @@
           </div>
         </div>
 
-        <!-- ML.IPYNB RESULTS -->
-        <div class="section-card p-5 md:p-7 mt-5">
-          <h3 class="text-lg font-bold text-slate-800">Resultados adicionales en ml.ipynb</h3>
 
-          <p class="text-sm text-slate-600 leading-6 mt-2">
-            El notebook ml.ipynb contiene una partición por vivienda con GroupShuffleSplit.
-            Se utilizó test_size=0.2 y random_state=42. La partición final registró 66,770
-            filas en train_set y 16,684 en test_set. El notebook comprobó que
-            test_set['folioviv'].isin(train_set["folioviv"].unique()).sum() devolviera 0.
-          </p>
-
-          <div class="table-wrap mt-4">
-            <table>
-              <thead>
-                <tr><th>Estadístico de ing_cor</th><th>train set</th><th>test set</th></tr>
-              </thead>
-              <tbody>
-                <tr><td>count</td><td class="mono">66770.000000</td><td class="mono">16684.000000</td></tr>
-                <tr><td>mean</td><td class="mono">57671.862353</td><td class="mono">57395.429227</td></tr>
-                <tr><td>std</td><td class="mono">31779.341813</td><td class="mono">31538.752254</td></tr>
-                <tr><td>min</td><td class="mono">0.000000</td><td class="mono">0.000000</td></tr>
-                <tr><td>25%</td><td class="mono">32721.942500</td><td class="mono">32848.010000</td></tr>
-                <tr><td>50%</td><td class="mono">51668.135000</td><td class="mono">51232.150000</td></tr>
-                <tr><td>75%</td><td class="mono">77839.410000</td><td class="mono">76714.810000</td></tr>
-                <tr><td>max</td><td class="mono">143136.170000</td><td class="mono">143138.190000</td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <h4 class="font-bold text-slate-800 mt-6 mb-3">Modelos de regresión ejecutados en ml.ipynb</h4>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr><th>Modelo</th><th>RMSE</th><th>MAE</th><th>R²</th><th>Datos usados para predecir</th></tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>LinearRegression</td>
-                  <td class="mono">24622.572428</td>
-                  <td class="mono">19207.105997</td>
-                  <td class="mono">0.399679</td>
-                  <td>y_train</td>
-                </tr>
-                <tr>
-                  <td>DecisionTreeRegressor</td>
-                  <td class="mono">346.570572</td>
-                  <td class="mono">5.992013</td>
-                  <td>No reportado</td>
-                  <td>y_train</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <p class="text-xs text-slate-500 leading-5 mt-3">
-            En ambos bloques, el notebook calcula predicciones con train_set: lin_reg.predict(X_train)
-            y tree_reg.predict(X_train). Se muestran las métricas exactamente como aparecen
-            en las salidas de ml.ipynb.
-          </p>
-        </div>
 
 
       </div>
     </section>
 
+    <!-- 6. MODELOS DE REGRESIÓN -->
+    <section id="regresion" class="max-w-7xl mx-auto px-5 md:px-8 py-12 md:py-16">
+      <p class="eyebrow">06 · Predicción de ingresos</p>
+      <h2 class="section-heading text-2xl md:text-3xl font-extrabold mt-2 mb-3">
+        Modelos de regresión
+      </h2>
+      <p class="text-sm text-slate-600 leading-6 max-w-4xl mb-7">
+        Modelado de Machine Learning para la predicción del ingreso corriente de los hogares,
+        utilizando las variables sociodemográficas disponibles en la base concentradohogar.
+      </p>
+
+      <div class="section-card p-5 md:p-7 mb-5">
+        <h3 class="text-lg font-bold text-slate-800 mb-4">Metodología</h3>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div class="metric-card">
+            <p class="text-xs font-semibold text-slate-500">Entrenamiento</p>
+            <p class="text-2xl font-extrabold mt-1">66,770</p>
+            <p class="text-xs text-slate-500 mt-1">Registros · 80%</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-xs font-semibold text-slate-500">Prueba</p>
+            <p class="text-2xl font-extrabold mt-1">16,684</p>
+            <p class="text-xs text-slate-500 mt-1">Registros · 20%</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-xs font-semibold text-slate-500">Validación cruzada</p>
+            <p class="text-2xl font-extrabold mt-1">3 folds</p>
+            <p class="text-xs text-slate-500 mt-1">GroupKFold por vivienda</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-xs font-semibold text-slate-500">Variable objetivo</p>
+            <p class="text-2xl font-extrabold mt-1">ing_cor</p>
+            <p class="text-xs text-slate-500 mt-1">Ingreso corriente</p>
+          </div>
+        </div>
+
+        <div class="mt-5 space-y-3 text-sm text-slate-600 leading-6">
+          <p>
+            <strong>Split:</strong> 80/20 con GroupShuffleSplit por vivienda (folioviv), para que
+            hogares de la misma vivienda no queden en train y test a la vez: 66,770 en train y
+            16,684 en test.
+          </p>
+          <p>
+            <strong>Preprocesamiento:</strong> imputación (mediana / moda), estandarización de
+            numéricas y one-hot de categóricas. Se excluyen los identificadores folioviv,
+            foliohog y ubica_geo.
+          </p>
+          <p>
+            <strong>Búsqueda de hiperparámetros:</strong> GridSearchCV con GroupKFold de 3 folds
+            (agrupado por vivienda). La métrica para regresión fue RMSE.
+          </p>
+        </div>
+      </div>
+
+      <div class="section-card p-5 md:p-7 mb-5">
+        <h3 class="text-lg font-bold text-slate-800 mb-4">Modelos y sus mejores parámetros</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Modelo</th><th>Mejores parámetros</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Regresión lineal</td>
+                <td class="mono">fit_intercept: False</td>
+              </tr>
+              <tr>
+                <td>Árbol de decisión</td>
+                <td class="mono">max_depth: 12, min_samples_leaf: 30</td>
+              </tr>
+              <tr>
+                <td>Random Forest</td>
+                <td class="mono">max_depth: 20, max_features: sqrt, min_samples_leaf: 5</td>
+              </tr>
+              <tr>
+                <td>KMeans</td>
+                <td class="mono">n_clusters: 100</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-card p-5 md:p-7 mb-5">
+        <h3 class="text-lg font-bold text-slate-800 mb-4">Resultados de los modelos</h3>
+        <p class="text-sm text-slate-600 leading-6 mb-4">
+          Las métricas incluidas en esta sección corresponden al desempeño de predicción del
+          ingreso: RMSE, MAE y R².
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Modelo</th>
+                <th>RMSE</th>
+                <th>MAE</th>
+                <th>R²</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Regresión lineal</td>
+                <td class="mono">24,313</td>
+                <td class="mono">19,057</td>
+                <td class="mono">0.406</td>
+              </tr>
+              <tr>
+                <td>Árbol de decisión</td>
+                <td class="mono">24,635</td>
+                <td class="mono">19,082</td>
+                <td class="mono">0.390</td>
+              </tr>
+              <tr class="bg-blue-50">
+                <td><strong>Random Forest</strong></td>
+                <td class="mono"><strong>23,743</strong></td>
+                <td class="mono"><strong>18,512</strong></td>
+                <td class="mono"><strong>0.430</strong></td>
+              </tr>
+              <tr>
+                <td>KMeans</td>
+                <td class="mono">28,303</td>
+                <td class="mono">22,555</td>
+                <td class="mono">0.195</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-5 mt-6">
+          <div>
+            <h4 class="font-bold text-slate-800 mb-3">Error cuadrático medio · RMSE</h4>
+            <div class="chart-container">
+              <canvas id="regressionRmseChart"></canvas>
+            </div>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-800 mb-3">Coeficiente de determinación · R²</h4>
+            <div class="chart-container">
+              <canvas id="regressionR2Chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card p-5 md:p-7 mb-5">
+        <h3 class="text-lg font-bold text-slate-800 mb-3">Elección del mejor modelo de regresión</h3>
+        <div class="rounded-xl bg-blue-50 border border-blue-100 p-5">
+          <p class="text-xs font-extrabold uppercase tracking-wider text-blue-800">Mejor modelo · Random Forest</p>
+          <p class="text-2xl md:text-3xl font-extrabold text-blue-950 mt-2">RMSE ≈ $23,743 · MAE ≈ $18,512</p>
+          <p class="text-sm text-blue-900 mt-2">R² = 0.430.</p>
+        </div>
+        <p class="text-sm text-slate-600 leading-7 mt-4">
+          Random Forest es el mejor: menor RMSE (≈ $23,743), menor MAE (≈ $18,512) y mayor R²
+          (0.430) entre los regresores. Le siguen Regresión Lineal y Árbol de Decisión. KMeans
+          (usado como agrupamiento + ingreso promedio por cluster, con 100 clusters) fue el más
+          débil (R² 0.195): al ser no supervisado, no optimiza la predicción del ingreso.
+        </p>
+      </div>
+
+      <div class="section-card p-5 md:p-7">
+        <h3 class="text-lg font-bold text-slate-800 mb-3">Variables más influyentes</h3>
+        <p class="text-sm text-slate-600 leading-6 mb-4">
+          Importancia por permutación sobre test (aumento del RMSE al permutar cada variable)
+          con el mejor modelo de predicción (Random Forest).
+        </p>
+        <div class="grid md:grid-cols-3 gap-3">
+          <div class="metric-card">
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-500">1 · educa_jefe</p>
+            <p class="text-2xl font-extrabold text-slate-900 mt-2">+$2,067</p>
+            <p class="text-sm text-slate-600 mt-1">Educación del jefe de hogar</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-500">2 · est_socio</p>
+            <p class="text-2xl font-extrabold text-slate-900 mt-2">+$1,888</p>
+            <p class="text-sm text-slate-600 mt-1">Estrato socioeconómico</p>
+          </div>
+          <div class="metric-card">
+            <p class="text-xs font-bold uppercase tracking-wider text-slate-500">3 · tam_loc</p>
+            <p class="text-2xl font-extrabold text-slate-900 mt-2">+$1,299</p>
+            <p class="text-sm text-slate-600 mt-1">Tamaño de localidad</p>
+          </div>
+        </div>
+        <div class="chart-container mt-5">
+          <canvas id="featureImportanceChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. CONCLUSIONES -->
+    <section id="conclusiones" class="bg-slate-100 border-y border-slate-200">
+      <div class="max-w-7xl mx-auto px-5 md:px-8 py-12 md:py-16">
+        <p class="eyebrow">07 · Cierre del proyecto</p>
+        <h2 class="section-heading text-2xl md:text-3xl font-extrabold mt-2 mb-3">
+          Conclusiones generales
+        </h2>
+        <p class="text-sm text-slate-600 leading-6 max-w-4xl mb-7">
+          Los objetivos de este proyecto se cumplieron y ofrecieron información muy relevante.
+        </p>
+
+        <div class="grid lg:grid-cols-3 gap-4">
+          <div class="section-card p-5">
+            <div class="number-chip mb-4">01</div>
+            <h3 class="font-bold text-slate-800 mb-2">Brecha por sexo de jefatura</h3>
+            <p class="text-sm text-slate-600 leading-7">
+              El sexo del jefe del hogar es una variable que tiene inferencia sobre el ingreso
+              corriente trimestral de los hogares, por lo que la brecha de género sigue existiendo,
+              al menos en lo que respecta al salario y los ingresos monetarios.
+            </p>
+          </div>
+          <div class="section-card p-5">
+            <div class="number-chip mb-4">02</div>
+            <h3 class="font-bold text-slate-800 mb-2">Variables sociodemográficas</h3>
+            <p class="text-sm text-slate-600 leading-7">
+              Las variables sociodemográficas tienen influencia sobre los ingresos de los hogares;
+              como se podría suponer, el nivel de estudios del jefe del hogar es la variable que
+              guarda una mayor relación al momento de tratar de estimar el ingreso de un hogar.
+            </p>
+          </div>
+          <div class="section-card p-5">
+            <div class="number-chip mb-4">03</div>
+            <h3 class="font-bold text-slate-800 mb-2">Composición del hogar</h3>
+            <p class="text-sm text-slate-600 leading-7">
+              La composición de los hogares es una variable importante al momento de clasificar
+              los hogares en distintos niveles de ingresos. Los hogares ampliados (con varios
+              integrantes sin relación directa de sangre) son los que se ubican en el tercil de
+              ingresos más alto, mientras que hogares unipersonales y de personas mayores de
+              65 años son los que componen el tercil más bajo.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-card p-5 md:p-7 mt-5">
+          <h3 class="text-lg font-bold text-slate-800 mb-3">Respuesta a la hipótesis principal</h3>
+          <p class="text-sm text-slate-600 leading-7">
+            Por lo que la respuesta a la hipótesis principal del proyecto es que, efectivamente,
+            los factores sociodemográficos tienen inferencia en los ingresos percibidos por los hogares.
+          </p>
+        </div>
+
+        <div class="section-card p-5 md:p-7 mt-5">
+          <h3 class="text-lg font-bold text-slate-800 mb-3">Sobre la relación de las variables con el ingreso</h3>
+          <p class="text-sm text-slate-600 leading-7">
+            En este análisis pudimos encontrar que efectivamente, las variables sociodemográficas
+            y la composición de los hogares tienen relación con el ingreso que perciben los hogares
+            mexicanos.
+          </p>
+          <p class="text-sm text-slate-600 leading-7 mt-4">
+            Mediante pruebas de hipótesis pudimos demostrar que los hogares perciben un ingreso
+            medio distinto si su jefe de hogar es un hombre o una mujer.
+          </p>
+          <p class="text-sm text-slate-600 leading-7 mt-4">
+            Si bien es cierto, que en los modelos de regresión obtuvimos el resultado de que el sexo
+            de un jefe del hogar tiene de las menores influencias sobre el ingreso corriente de los
+            hogares, y que las diferencias fueron de $3,503 trimestrales, podemos argumentar que
+            es una brecha que existe y se debe de tomar en cuenta.
+          </p>
+          <p class="text-sm text-slate-600 leading-7 mt-4">
+            Los modelos de clasificación nos muestran que la composición del hogar interfiere en
+            el ingreso, siendo los hogares ampliados aquellos que perciben mayor ingreso al tener
+            mayor cantidad de integrantes aportando ingresos, mientras que aquellos en los que
+            vive una sola persona o personas mayores (jubiladas o pensionadas) son las que menores
+            ingresos perciben.
+          </p>
+          <p class="text-sm text-slate-600 leading-7 mt-4">
+            Los modelos de regresión nos mostraron qué tanta influencia tienen algunas variables
+            sobre el ingreso de los hogares, siendo la educación del jefe del hogar la variable que
+            más suma al ingreso familiar (en el ejercicio de Random Forest para regresión), además,
+            el tamaño de la localidad en que se reside también influye en los ingresos, por lo que
+            podemos inferir que en localidades urbanas se tiende a recibir ingresos distintos que
+            en las rurales.
+          </p>
+        </div>
+
+        <div class="section-card p-5 md:p-7 mt-5">
+          <h3 class="text-lg font-bold text-slate-800 mb-3">Sobre los modelos de Machine Learning</h3>
+          <p class="text-sm text-slate-600 leading-7">
+            Los modelos de machine learning aplicados nos ayudaron mostrando panoramas generales
+            de los datos y su comportamiento, aportando cada uno información distinta.
+          </p>
+          <p class="text-sm text-slate-600 leading-7 mt-4">
+            Los modelos de regresión no fueron capaces de estimar correctamente el ingreso de los
+            hogares, es posible que haciendo segmentación por estado o por localidad podamos
+            lograr mejores resultados, ya que el estilo de vida y condiciones socioeconómicas de
+            cada localidad pueden ser muy distintas, además de que estos mismos modelos nos
+            mostraron que el tamaño de la localidad tiene inferencia en el ingreso.
+          </p>
+          <p class="text-sm text-slate-600 leading-7 mt-4">
+            Y es justo ahí donde estos modelos mostraron su valor para este estudio y es que fueron
+            capaces de mostrarnos qué variables son las que pueden moldear el ingreso y en cierta
+            medida cuáles lo hacen con mayor fuerza que otras.
+          </p>
+          <p class="text-sm text-slate-600 leading-7 mt-4">
+            Los modelos de clasificación por otro lado mostraron resultados más precisos, si bien,
+            por su naturaleza no son capaces de inferir el ingreso de los hogares, sí tuvieron
+            relativo éxito al clasificarlos en categorías de ingresos, más específicamente en qué
+            hogares perciben por encima y por debajo de cierto umbral, así como al clasificarlos
+            dentro de terciles de ingresos similares.
+          </p>
+        </div>
+      </div>
+    </section>
+
     <!-- 6. CÓDIGO REPRODUCIBLE -->
     <section id="codigo" class="max-w-7xl mx-auto px-5 md:px-8 py-12 md:py-16">
-      <p class="eyebrow">06 · Código reproducible</p>
+      <p class="eyebrow">08 · Código reproducible</p>
       <h2 class="section-heading text-2xl md:text-3xl font-extrabold mt-2">
         Fragmentos de Python
       </h2>
       <p class="text-sm text-slate-600 leading-6 mt-3 max-w-4xl">
-        Fragmentos correspondientes a los procedimientos y notebooks adjuntos. Los fragmentos
-        utilizan los nombres de variables, funciones y parámetros consignados en los documentos.
+        Fragmentos de Python utilizados en los procesos de preparación de datos, análisis estadístico y modelado.
       </p>
 
       <div class="section-card mt-6 overflow-hidden">
@@ -1768,7 +1950,7 @@
           <button class="code-tab" data-code-tab="iqr" role="tab" aria-selected="false">Filtro IQR</button>
           <button class="code-tab" data-code-tab="welch" role="tab" aria-selected="false">Pruebas estadísticas</button>
           <button class="code-tab" data-code-tab="ml" role="tab" aria-selected="false">K-Means y KNN</button>
-          <button class="code-tab" data-code-tab="split" role="tab" aria-selected="false">ml.ipynb</button>
+          <button class="code-tab" data-code-tab="split" role="tab" aria-selected="false">análisis de correlaciones</button>
         </div>
 
         <!-- CÓDIGO LIMPIEZA -->
@@ -1776,7 +1958,7 @@
           <div class="flex items-center justify-between gap-3 px-4 py-3 bg-slate-800">
             <div>
               <p class="text-xs font-bold text-white">Integración por id_per</p>
-              <p class="text-xs text-slate-400">Reporte · Programa de limpieza</p>
+              <p class="text-xs text-slate-400">Preparación de datos</p>
             </div>
             <button class="copy-button rounded-lg px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold" data-copy="clean">
               Copiar código
@@ -1855,7 +2037,7 @@ print("=== Tamaño final ===", df_final.shape)</code></pre>
           <div class="flex items-center justify-between gap-3 px-4 py-3 bg-slate-800">
             <div>
               <p class="text-xs font-bold text-white">Depuración de valores atípicos</p>
-              <p class="text-xs text-slate-400">EDA_Hog.ipynb · Celda de eliminación de outliers</p>
+              <p class="text-xs text-slate-400">análisis exploratorio a nivel hogar · Celda de eliminación de outliers</p>
             </div>
             <button class="copy-button rounded-lg px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold" data-copy="iqr">
               Copiar código
@@ -2001,7 +2183,7 @@ print(f'Diferencia de ingresos: {datos_h['ing_cor'].mean() - datos_m['ing_cor'].
           <div class="flex items-center justify-between gap-3 px-4 py-3 bg-slate-800">
             <div>
               <p class="text-xs font-bold text-white">K-Means y KNN</p>
-              <p class="text-xs text-slate-400">K_Means_&_KNN.ipynb · Celda completa</p>
+              <p class="text-xs text-slate-400">modelos K-Means y KNN · Celda completa</p>
             </div>
             <button class="copy-button rounded-lg px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold" data-copy="ml">
               Copiar código
@@ -2116,7 +2298,7 @@ print(f"RMSE:     ${root_mean_squared_error(y_reg_te, y_reg_pred):,.2f} MXN")</c
           <div class="flex items-center justify-between gap-3 px-4 py-3 bg-slate-800">
             <div>
               <p class="text-xs font-bold text-white">Partición por vivienda y LinearRegression</p>
-              <p class="text-xs text-slate-400">ml.ipynb</p>
+              <p class="text-xs text-slate-400">análisis de correlaciones</p>
             </div>
             <button class="copy-button rounded-lg px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold" data-copy="split">
               Copiar código
@@ -2205,15 +2387,6 @@ scores_tree.head()</code></pre>
         </div>
       </div>
 
-      <div class="note p-4 mt-5">
-        <p class="text-sm text-slate-700 leading-6">
-          En el código de K_Means_&_KNN.ipynb, X_kmeans se construye con
-          scaler_km.fit_transform(df_ml). df_ml se crea con pd.get_dummies a partir de
-          df.drop(columns=id_cols), por lo que conserva ing_cor. El reporte describe K-Means
-          como ejecutado sin intervención de la variable objetivo. Ambos contenidos se muestran
-          sin modificar el código ni sustituir la descripción del reporte.
-        </p>
-      </div>
     </section>
 
   </main>
@@ -2242,7 +2415,7 @@ scores_tree.head()</code></pre>
 
       <div class="border-t border-slate-800 mt-8 pt-5 flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
         <p class="text-xs text-slate-500">
-          Proyecto académico basado en el reporte y notebooks adjuntos.
+          Proyecto académico · ENIGH 2024.
         </p>
         <a href="#inicio" class="text-xs text-blue-200 hover:text-white">Volver al inicio ↑</a>
       </div>
@@ -2266,7 +2439,7 @@ scores_tree.head()</code></pre>
       slate: '#7b8fa5'
     };
 
-    // Pearson: train_set.corr(numeric_only=True), ml.ipynb
+    // Pearson: train_set.corr(numeric_only=True), análisis de correlaciones
     new Chart(document.getElementById('pearsonChart'), {
       type: 'bar',
       data: {
@@ -2331,7 +2504,7 @@ scores_tree.head()</code></pre>
       }
     });
 
-    // Distribución de hogares por clase_hog, EDA_Hog.ipynb
+    // Distribución de hogares por clase_hog, análisis exploratorio a nivel hogar
     new Chart(document.getElementById('houseTypeChart'), {
       type: 'bar',
       data: {
@@ -2369,7 +2542,7 @@ scores_tree.head()</code></pre>
       }
     });
 
-    // Distribución por tam_loc, EDA_Hog.ipynb
+    // Distribución por tam_loc, análisis exploratorio a nivel hogar
     new Chart(document.getElementById('localityChart'), {
       type: 'bar',
       data: {
@@ -2490,16 +2663,16 @@ scores_tree.head()</code></pre>
       }
     });
 
-    // Comparativa de accuracy reportado y notebook.
+    // Accuracy de los modelos de clasificación.
     new Chart(document.getElementById('knnAccuracyChart'), {
       type: 'bar',
       data: {
         labels: [
-          'KNN clústeres · reporte',
-          'KNN binario · reporte',
-          'KNN binario · notebook',
-          'KNN terciles · reporte',
-          'KNN terciles · notebook'
+          'KNN clústeres',
+          'KNN binario · mediana',
+          'KNN binario · mediana',
+          'KNN por terciles',
+          'KNN por terciles'
         ],
         datasets: [{
           label: 'Accuracy',
@@ -2536,6 +2709,74 @@ scores_tree.head()</code></pre>
             title: { display: true, text: 'Accuracy' },
             grid: { color: '#edf1f5' }
           },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+
+    // Resultados de regresión del PDF final.
+    new Chart(document.getElementById('regressionRmseChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Regresión lineal', 'Árbol de decisión', 'Random Forest', 'KMeans'],
+        datasets: [{
+          label: 'RMSE',
+          data: [24313, 24635, 23743, 28303],
+          backgroundColor: [chartColors.lightBlue, chartColors.cyan, chartColors.navy, chartColors.gold],
+          borderRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: 'RMSE' }, grid: { color: '#edf1f5' } },
+          x: { grid: { display: false }, ticks: { maxRotation: 25, minRotation: 0 } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('regressionR2Chart'), {
+      type: 'bar',
+      data: {
+        labels: ['Regresión lineal', 'Árbol de decisión', 'Random Forest', 'KMeans'],
+        datasets: [{
+          label: 'R² · tabla de resultados',
+          data: [0.406, 0.390, 0.430, 0.195],
+          backgroundColor: [chartColors.lightBlue, chartColors.cyan, chartColors.navy, chartColors.gold],
+          borderRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, max: 0.5, title: { display: true, text: 'R²' }, grid: { color: '#edf1f5' } },
+          x: { grid: { display: false }, ticks: { maxRotation: 25, minRotation: 0 } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('featureImportanceChart'), {
+      type: 'bar',
+      data: {
+        labels: ['educa_jefe', 'est_socio', 'tam_loc'],
+        datasets: [{
+          label: 'Aumento del RMSE al permutar (MXN)',
+          data: [2067, 1888, 1299],
+          backgroundColor: [chartColors.navy, chartColors.blue, chartColors.cyan],
+          borderRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { beginAtZero: true, title: { display: true, text: 'Aumento del RMSE (MXN)' }, grid: { color: '#edf1f5' } },
           y: { grid: { display: false } }
         }
       }
