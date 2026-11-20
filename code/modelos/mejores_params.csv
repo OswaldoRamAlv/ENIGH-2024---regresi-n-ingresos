@@ -1,0 +1,7 @@
+,0
+mejor,Random Forest
+Regresión Lineal,{'linearregression__fit_intercept': False}
+Árbol de Decisión,"{'decisiontreeregressor__max_depth': 12, 'decisiontreeregressor__min_samples_leaf': 100}"
+Random Forest,"{'randomforestregressor__max_depth': 20, 'randomforestregressor__max_features': 'sqrt', 'randomforestregressor__min_samples_leaf': 5}"
+KMeans,{'kmeansregressor__n_clusters': 100}
+KNN,"{'kneighborsclassifier__n_neighbors': 30, 'kneighborsclassifier__weights': 'distance'}"
